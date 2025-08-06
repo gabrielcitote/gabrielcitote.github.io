@@ -1,0 +1,7 @@
+[
+  { "text": "C’est une phrase en français.", "lang": "French",  "iso": ["FR", "BE", "CA"] },
+  { "text": "¿Dónde está la biblioteca?",     "lang": "Spanish", "iso": ["ES", "MX", "AR"] },
+  { "text": "Добро пожаловать!",              "lang": "Russian", "iso": ["RU"] },
+  { "text": "مرحبا بكم",                      "lang": "Arabic",  "iso": ["SA", "EG", "MA"] },
+  { "text": "สวัสดีประเทศไทย",                "lang": "Thai",    "iso": ["TH"] }
+]
