@@ -210,6 +210,8 @@ function nextPhrase() {
   nextBtn.hidden = true;
   familyShown = false;  // Reset here
   document.getElementById('show-family').hidden = true;
+  document.getElementById('show-answer').hidden = false;
+  document.getElementById('skip').hidden = false;
 }
 
 
@@ -286,6 +288,8 @@ function showAnswer() {
 
   document.getElementById('show-family').hidden = false;
   nextBtn.hidden = false;
+  document.getElementById('show-answer').hidden = true;
+  document.getElementById('skip').hidden = true;
 }
 
 
