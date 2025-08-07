@@ -1,8 +1,8 @@
 /* ---------- global state ---------- */
-let phrases = [];
-let current  = null;
-let panZoom = null;
-let svgDoc;
+let phrases   = [];
+let current   = null;
+let svgDoc    = null;          // will hold the SVG DOM
+let panZoom   = null;          // svg-pan-zoom instance
 const feedbackEl = document.getElementById('feedback');
 const nextBtn    = document.getElementById('next');
 
@@ -11,55 +11,40 @@ fetch('data/phrases.json')
   .then(r => r.json())
   .then(json => { phrases = json; startGame(); });
 
-/* -------- util: ISO ➜ country name ------------- */
-function isoToName(el, iso){
-  if (!el) return iso;
-  const t = el.querySelector('title');
-  return t && t.textContent.trim() ? t.textContent.trim() : iso;
+/* ---------- helper: ISO ➜ country name (from <title>) ---------- */
+function isoToName(el, iso) {
+  const t = el && el.querySelector ? el.querySelector('title') : null;
+  return (t && t.textContent.trim()) || iso;
 }
 
-/* ---------- main init ---------- */
+/* ---------- start-up ---------- */
 function startGame() {
   nextPhrase();
   initMap();
   nextBtn.onclick = nextPhrase;
 }
 
+/* ---------- load / init the SVG map ---------- */
 function initMap() {
   const mapObj = document.getElementById('map');
-  
+
   const tryInit = () => {
-    if (!mapObj.contentDocument) {
-      console.error('SVG failed to load');
-      return;
-    }
+    if (!mapObj.contentDocument) return;   // not ready yet
     onSvgLoaded();
   };
 
-  // Set timeout as fallback
-  const loadTimeout = setTimeout(() => {
-    if (!panZoom) {
-      console.error('SVG loading timed out');
-    }
-  }, 3000);
+  // if SVG already cached
+  if (mapObj.contentDocument) tryInit();
 
-  mapObj.addEventListener('load', () => {
-    clearTimeout(loadTimeout);
-    tryInit();
-  });
-
-  // Try immediately if already loaded
-  if (mapObj.contentDocument) {
-    clearTimeout(loadTimeout);
-    tryInit();
-  }
+  // or wait for load event
+  mapObj.addEventListener('load', tryInit);
 }
 
-/* ... your existing code ... */
-
+/* ---------- runs once when SVG is available ---------- */
 function onSvgLoaded() {
   svgDoc = document.getElementById('map').contentDocument;
 
+  /* enable zoom & pan */
   panZoom = svgPanZoom(svgDoc.documentElement, {
     zoomEnabled: true,
     controlIconsEnabled: true,
@@ -70,45 +55,61 @@ function onSvgLoaded() {
     maxZoom: 15
   });
 
-  svgDoc.addEventListener('click', e => {
-    let el = e.target;
-    while (el && !el.id) el = el.parentNode;
-    if (el && !el.id.startsWith('VIEWPORT')) handleGuess(el);
-  });
+  /* — Click-vs-drag filter — */
+  let isDragging = false;
+  svgDoc.addEventListener('mousedown', () =>  isDragging = false);
+  svgDoc.addEventListener('mousemove', () =>  isDragging = true);
+  svgDoc.addEventListener('mouseup',   e => { if (!isDragging) handleMapClick(e); });
+
+  // Touch support
+  svgDoc.addEventListener('touchstart', () => isDragging = false);
+  svgDoc.addEventListener('touchmove',  () => isDragging = true);
+  svgDoc.addEventListener('touchend',   e => { if (!isDragging) handleMapClick(e); });
 }
 
-/* OUTSIDE of onSvgLoaded: */
+/* ---------- map click dispatcher ---------- */
+function handleMapClick(e) {
+  let el = e.target;
+
+  // walk up to first ancestor that has a 2-letter ISO id
+  while (el && (!el.id || el.id.startsWith('VIEWPORT') || el.id.length !== 2)) {
+    el = el.parentNode;
+  }
+  if (el && el.id && el.id.length === 2) {
+    handleGuess(el);          // valid country group
+  }
+}
+
+/* ---------- show a new random phrase ---------- */
 function nextPhrase() {
   if (svgDoc) {
     svgDoc.querySelectorAll('.correct, .wrong')
-          .forEach(p => p.classList.remove('correct', 'wrong'));
+          .forEach(el => el.classList.remove('correct', 'wrong'));
   }
 
   current = phrases[Math.floor(Math.random() * phrases.length)];
   document.getElementById('question').textContent = current.text;
   feedbackEl.textContent = '';
   nextBtn.hidden = true;
-  document.body.classList.remove('no-pan');
 }
 
-function handleGuess(target) {
-  const iso = target.id.toUpperCase();
-  const isRight = current.iso.includes(iso);
-  const name = isoToName(target, iso);
+/* ---------- evaluate a guess ---------- */
+function handleGuess(countryEl) {
+  const iso   = countryEl.id.toUpperCase();
+  const name  = isoToName(countryEl, iso);
+  const right = current.iso.includes(iso);
 
-  target.classList.add(isRight ? 'correct' : 'wrong');
-  
-  feedbackEl.textContent = isRight
+  countryEl.classList.add(right ? 'correct' : 'wrong');
+  feedbackEl.textContent = right
     ? `✅ Correct! (${name})`
     : `❌ Wrong – that's ${name}. Correct language: ${current.lang}`;
 
-  if (!isRight && svgDoc) {
+  if (!right && svgDoc) {
     current.iso.forEach(correctIso => {
-      const correctEl = svgDoc.getElementById(correctIso);
-      if (correctEl) correctEl.classList.add('correct');
+      const ok = svgDoc.getElementById(correctIso);
+      if (ok) ok.classList.add('correct');
     });
   }
 
   nextBtn.hidden = false;
-  document.body.classList.add('no-pan');
 }
