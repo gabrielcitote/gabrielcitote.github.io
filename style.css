@@ -55,3 +55,8 @@ button {
   font-size: 1rem;
   cursor: pointer;
 }
+
+body.dragging {
+  cursor: move;
+  user-select: none;
+}
