@@ -282,6 +282,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.getElementById('show-family').addEventListener('click', () => {
+  if (familyShown) return;  // Prevent duplicates
+  familyShown = true;
+
   const currentLang = current.lang;
   const currentFamily = languageFamilyMap[currentLang];
 
@@ -294,14 +297,12 @@ document.getElementById('show-family').addEventListener('click', () => {
     return;
   }
 
-  // Find all ISO country codes that have languages in the same family
   const matchingISOs = Object.entries(countryLangMap)
     .filter(([iso, langs]) =>
       langs.some(lang => languageFamilyMap[lang] === currentFamily)
     )
     .map(([iso]) => iso);
 
-  // Highlight countries
   countriesLayer.eachLayer(layer => {
     const iso = iso2to3[layer.feature.id] || layer.feature.id;
     if (matchingISOs.includes(iso)) {
@@ -309,7 +310,6 @@ document.getElementById('show-family').addEventListener('click', () => {
     }
   });
 
-  // Show family info
   const members = Object.entries(languageFamilyMap)
     .filter(([_, fam]) => fam === currentFamily)
     .map(([lang]) => lang)
@@ -318,10 +318,9 @@ document.getElementById('show-family').addEventListener('click', () => {
 
   feedbackEl.innerHTML += `
     <div style="border: 2px dashed orange; padding: 10px; margin-top: 10px; border-radius: 5px;">
-      <strong>🌐 Language Family:</strong><br>
+      🌐 <strong>Language Family:</strong> <br>
       <b>${currentFamily}</b><br>
       Family Members: ${members}
     </div>
   `;
 });
-
