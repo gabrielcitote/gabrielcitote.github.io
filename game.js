@@ -1,69 +1,91 @@
 /* ---------- global state ---------- */
 let phrases = [];
 let current  = null;
-
-let svgDoc      = null;                     // set after SVG loads
-let panZoom     = null;                     // svg-pan-zoom instance
+let panZoom = null; // Store panZoom instance
+let svgDoc; // set after the SVG loads
 const feedbackEl = document.getElementById('feedback');
 const nextBtn    = document.getElementById('next');
 
-/* ---------- load phrases, then start ---------- */
+/* ---------- load data, then start ---------- */
 fetch('data/phrases.json')
   .then(r => r.json())
   .then(json => { phrases = json; startGame(); });
 
-/* ---------- ISO → country name helper ---------- */
-function isoToName(el, iso) {
-  if (!el) return iso;
-  const t = el.querySelector('title');
-  return t && t.textContent.trim() ? t.textContent.trim() : iso;
+/* ---------- util: ISO → Country Name (from <title>) ---------- */
+function isoToName(element, iso) {
+  if (!element) return iso;
+  const title = element.querySelector('title');
+  if (title && title.textContent.trim()) return title.textContent.trim();
+  return iso; // fallback
 }
 
-/* ---------- main initialiser ---------- */
+/* ---------- main init ---------- */
 function startGame() {
-  nextPhrase();                                  // show first sentence
-
-  const mapObj = document.getElementById('map');
-
-  // If SVG already cached, init immediately; else wait for 'load'
-  if (mapObj.contentDocument) {
-    onSvgLoaded();
-  } else {
-    mapObj.addEventListener('load', onSvgLoaded);
-  }
-
+  nextPhrase(); // show first sentence
   nextBtn.onclick = nextPhrase;
+  initMap();
 }
 
-/* runs exactly once, after SVG is available */
+function initMap() {
+  const mapObj = document.getElementById('map');
+  
+  // Handle both cached and async-loaded SVGs
+  const tryInit = () => {
+    if (mapObj.contentDocument && !panZoom) {
+      onSvgLoaded();
+    }
+  };
+
+  // Try immediately if already loaded
+  tryInit();
+  
+  // Also listen for future load events
+  mapObj.addEventListener('load', tryInit);
+}
+
 function onSvgLoaded() {
   svgDoc = document.getElementById('map').contentDocument;
+  
+  // Enable zoom + pan
+  try {
+    panZoom = svgPanZoom(svgDoc.documentElement, {
+      zoomEnabled: true,
+      controlIconsEnabled: true,
+      fit: true,
+      center: true,
+      contain: true,
+      minZoom: 1,
+      maxZoom: 15,
+      beforePan: (oldPan, newPan) => {
+        // Prevent panning during drag operations
+        return !document.body.classList.contains('dragging');
+      }
+    });
+    
+    // Ensure proper sizing
+    window.addEventListener('resize', () => panZoom.resize());
+  } catch (e) {
+    console.error('SVG Pan Zoom initialization failed:', e);
+  }
 
-  /* enable zoom + pan */
-  panZoom = svgPanZoom(svgDoc.documentElement, {
-    zoomEnabled: true,
-    controlIconsEnabled: true,
-    fit: true,
-    center: true,
-    contain: true,      // keep the map inside its box
-    minZoom: 1,
-    maxZoom: 15
+  // Add click handler for country selection
+  svgDoc.addEventListener('click', function(e) {
+    handleSvgClick(e);
   });
+}
 
-  /* click-vs-drag filter on each PATH (so wheel/drag still work) */
-  svgDoc.querySelectorAll('path').forEach(path => {
-    let sx, sy, moved = false;
-
-    path.addEventListener('mousedown', e => {
-      sx = e.clientX; sy = e.clientY; moved = false;
-    });
-    path.addEventListener('mousemove', e => {
-      if (Math.abs(e.clientX - sx) > 3 || Math.abs(e.clientY - sy) > 3) moved = true;
-    });
-    path.addEventListener('mouseup', e => {
-      if (!moved) handleGuess(path);
-    });
-  });
+/* ---------- SVG click handler ---------- */
+function handleSvgClick(e) {
+  // Walk up to find country group
+  let target = e.target;
+  while (target && !target.id && target.parentNode !== svgDoc.documentElement) {
+    target = target.parentNode;
+  }
+  
+  // Validate target
+  if (!target || !target.id || target.id.startsWith('VIEWPORT')) return;
+  
+  handleGuess(target);
 }
 
 /* ---------- show a new random phrase ---------- */
@@ -81,22 +103,18 @@ function nextPhrase() {
 
 /* ---------- handle a country click ---------- */
 function handleGuess(target) {
-  // Walk up to the <g id="XX"> that owns the ISO code
-  while (target && !target.id) target = target.parentNode;
-  if (!target || target.id.startsWith('VIEWPORT')) return;   // ocean / background
+  const iso = target.id.toUpperCase();
+  const isRight = current.iso.includes(iso);
+  const countryName = isoToName(target, iso);
 
-  const iso   = target.id.toUpperCase();
-  const name  = isoToName(target, iso);
-  const right = current.iso.includes(iso);
+  target.classList.add(isRight ? 'correct' : 'wrong');
+  feedbackEl.textContent = isRight
+    ? `✅ Correct! (${countryName})`
+    : `❌ Wrong – that’s ${countryName}. Correct language: ${current.lang}`;
 
-  target.classList.add(right ? 'correct' : 'wrong');
-  feedbackEl.textContent = right
-    ? `✅ Correct! (${name})`
-    : `❌ Wrong – that’s ${name}. Correct language: ${current.lang}`;
-
-  if (!right && svgDoc) {
-    const correctEl = svgDoc.getElementById(current.iso[0]);
-    if (correctEl) correctEl.classList.add('correct');
+  if (!isRight && svgDoc) {
+    const rightEl = svgDoc.getElementById(current.iso[0]);
+    if (rightEl) rightEl.classList.add('correct');
   }
 
   nextBtn.hidden = false;
