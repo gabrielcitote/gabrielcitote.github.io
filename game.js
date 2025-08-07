@@ -2,17 +2,20 @@ let map;
 let countriesLayer;
 let phrases = [];
 let current = null;
+let countryLangMap = {}; // NEW: Stores country-to-languages
 
 const feedbackEl = document.getElementById('feedback');
 const questionEl = document.getElementById('question');
 const nextBtn    = document.getElementById('next');
 
-// Load phrases and GeoJSON map
+// Load phrases, GeoJSON map, and country languages
 Promise.all([
   fetch('data/phrases.json').then(r => r.json()),
-  fetch('data/countries.geo.json').then(r => r.json())
-]).then(([phraseData, geoData]) => {
+  fetch('data/countries.geo.json').then(r => r.json()),
+  fetch('data/countries-languages.json').then(r => r.json())  // NEW
+]).then(([phraseData, geoData, langData]) => {
   phrases = phraseData;
+  countryLangMap = langData;  // NEW
   initMap(geoData);
   nextPhrase();
   nextBtn.onclick = nextPhrase;
@@ -56,12 +59,15 @@ function handleGuess(feature, layer) {
   const name = feature.properties.name;
   const isRight = current.iso.includes(iso);
 
+  const languages = countryLangMap[iso] || [];
+  const langText = languages.length ? languages.join(', ') : 'Unknown';
+
   if (isRight) {
     layer.setStyle({ fillColor: "green" });
-    feedbackEl.textContent = `✅ Correct! (${name})`;
+    feedbackEl.textContent = `✅ Correct! (${name}) — Languages: ${langText}`;
   } else {
     layer.setStyle({ fillColor: "red" });
-    feedbackEl.textContent = `❌ Wrong – that’s ${name}. Correct language: ${current.lang}`;
+    feedbackEl.textContent = `❌ Wrong – that’s ${name}. Languages: ${langText}. Correct language: ${current.lang}`;
 
     countriesLayer.eachLayer(l => {
       const correct = current.iso.includes(l.feature.id);
