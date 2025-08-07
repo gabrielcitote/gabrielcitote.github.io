@@ -11,20 +11,25 @@
   <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
-  <h1>🧠 LingoGuessr</h1>
-  <div id="phrase-box">
-  <div id="question"></div>
-</div>
+  <header>
+    <h1 id="title">🧠 LingoGuessr</h1>
+  </header>
+
+  <div id="phrase-wrapper">
+    <p id="prompt">Where is this language spoken?</p>
+    <div id="phrase-box">
+      <div id="question"></div>
+    </div>
+  </div>
+
   <div id="map"></div>
   <p id="feedback"></p>
   <button id="next" hidden>Next phrase</button>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="game.js"></script>
-  <footer id="credits">
-  ✨ Created by Chung-I 
-</footer>
+  <footer>
+    <p id="credit">✨ Created by Chung-I</p>
+  </footer>
 </body>
+
 </html>
 
