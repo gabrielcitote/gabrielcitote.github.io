@@ -152,3 +152,28 @@ footer {
   background-color: #c1eec7;
   transform: scale(1.05);
 }
+
+#phrase-box {
+  background-color: white;
+  border: 2px solid #ccc;
+  padding: 20px;
+  margin: 0 auto;
+  border-radius: 10px;
+  max-width: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 24px;
+  font-family: 'Noto Sans', sans-serif;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+#question {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease-in-out;
+}
+
+
+
