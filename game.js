@@ -3,6 +3,7 @@ let countriesLayer;
 let phrases = [];
 let current = null;
 let countryLangMap = {}; // ALPHA-3 ISO → Languages
+let familyShown = false;
 
 const iso2to3 = {
   "AF": "AFG", "AX": "ALA", "AL": "ALB", "DZ": "DZA", "AS": "ASM", "AD": "AND",
@@ -203,9 +204,10 @@ function nextPhrase() {
   questionEl.textContent = current.text;
   feedbackEl.textContent = '';
   nextBtn.hidden = true;
-
+  familyShown = false;  // Reset here
   document.getElementById('show-family').hidden = true;
 }
+
 
 function handleGuess(feature, layer) {
   const iso2 = feature.id;
