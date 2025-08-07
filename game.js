@@ -146,3 +146,27 @@ function handleGuess(feature, layer) {
 
   nextBtn.hidden = false;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Hide main game UI
+  document.querySelector('header').style.display = 'none';
+  document.querySelector('main').style.display = 'none';
+  document.querySelector('footer').style.display = 'none';
+
+  // Show game on button click
+  document.getElementById('start-btn').addEventListener('click', () => {
+    document.getElementById('start-screen').style.display = 'none';
+    document.querySelector('header').style.display = 'block';
+    document.querySelector('main').style.display = 'block';
+    document.querySelector('footer').style.display = 'block';
+
+    // Load data and start game
+    Promise.all([
+      fetch('data/phrases.json').then(r => r.json()),
+      fetch('data/countries.geo.json').then(r => r.json()),
+      fetch('data/countries-languages.json').then(r => r.json())
+    ]).then(([phraseData, geoData, langData]) => {
+      startGame(phraseData, geoData, langData);
+    });
+  });
+});
