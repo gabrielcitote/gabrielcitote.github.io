@@ -11,13 +11,19 @@ fetch('data/phrases.json')
   .then(r => r.json())
   .then(json => { phrases = json; startGame(); });
 
+/* ---------- util: ISO → Country Name (from <title>) ---------- */
+function isoToName(element, iso){
+  if(!element) return iso;
+  const title = element.querySelector('title');
+  if(title && title.textContent.trim()) return title.textContent.trim();
+  return iso; // fallback
+}
+
 /* ---------- main init ---------- */
 function startGame() {
   nextPhrase();                     // show first sentence
 
   const mapObj = document.getElementById('map');
-
-  // If SVG already cached & ready, init immediately; else wait for load event
   if (mapObj.contentDocument) {
     onSvgLoaded();
   } else {
@@ -27,25 +33,31 @@ function startGame() {
   nextBtn.onclick = nextPhrase;
 }
 
-/* ---------- called once when SVG is ready ---------- */
-function onSvgLoaded() {
+function onSvgLoaded(){
   svgDoc = document.getElementById('map').contentDocument;
 
-  // enable zoom + pan
+  /* enable zoom + pan */
   window.panZoom = svgPanZoom(svgDoc.documentElement, {
     zoomEnabled: true,
     controlIconsEnabled: true,
     fit: true,
     center: true,
-    contain: true,     // keep map within box
+    contain: true,
     minZoom: 1,
     maxZoom: 15
   });
 
-  // add click listeners to every country path
-  svgDoc.querySelectorAll('path').forEach(p =>
-    p.addEventListener('click', () => handleGuess(p))
-  );
+  /* click without drag helper */
+  let startX, startY, moved;
+  svgDoc.addEventListener('mousedown', e => {
+    startX = e.clientX; startY = e.clientY; moved = false;
+  });
+  svgDoc.addEventListener('mousemove', e => {
+    if(Math.abs(e.clientX-startX) > 3 || Math.abs(e.clientY-startY) > 3) moved = true;
+  });
+  svgDoc.addEventListener('mouseup', e => {
+    if(!moved) handleGuess(e.target);
+  });
 }
 
 /* ---------- show a new random phrase ---------- */
@@ -63,19 +75,19 @@ function nextPhrase() {
 
 /* ---------- handle a country click ---------- */
 function handleGuess(target) {
-  // Walk up the DOM to the <g id="XX"> with the ISO code
+  // Walk up to the <g id="XX"> that carries the ISO code
   while (target && !target.id) target = target.parentNode;
-  if (!target) return;                // clicked the ocean
+  if (!target || target.id.startsWith('VIEWPORT')) return; // ocean/background or viewport group
 
   const iso = target.id.toUpperCase();
   const isRight = current.iso.includes(iso);
+  const countryName = isoToName(target, iso);
 
   target.classList.add(isRight ? 'correct' : 'wrong');
   feedbackEl.textContent = isRight
-    ? '✅ Correct!'
-    : `❌ Wrong – that’s ${iso}. Correct language: ${current.lang}`;
+    ? `✅ Correct! (${countryName})`
+    : `❌ Wrong – that’s ${countryName}. Correct language: ${current.lang}`;
 
-  // highlight one correct country if user guessed wrong
   if (!isRight && svgDoc) {
     const rightEl = svgDoc.getElementById(current.iso[0]);
     if (rightEl) rightEl.classList.add('correct');
