@@ -11,16 +11,11 @@ fetch('data/phrases.json')
   .then(r => r.json())
   .then(json => { phrases = json; startGame(); });
 
-/* ---------- util: ISO → Country Name ---------- */
-function isoToName(iso) {
-  // Map ISO codes to country names
-  const countryNames = {
-    DK: "Denmark", ZA: "South Africa", FR: "France", ES: "Spain", 
-    DE: "Germany", IT: "Italy", RU: "Russia", CN: "China", 
-    JP: "Japan", BR: "Brazil", IN: "India", US: "United States",
-    // Add more as needed
-  };
-  return countryNames[iso] || iso;
+/* -------- util: ISO ➜ country name ------------- */
+function isoToName(el, iso){
+  if (!el) return iso;
+  const t = el.querySelector('title');
+  return t && t.textContent.trim() ? t.textContent.trim() : iso;
 }
 
 /* ---------- main init ---------- */
@@ -60,41 +55,37 @@ function initMap() {
   }
 }
 
+/* -------- onSvgLoaded (replace the whole block) ---------- */
 function onSvgLoaded() {
   svgDoc = document.getElementById('map').contentDocument;
-  
-  // Enable zoom + pan with proper event prevention
-  try {
-    panZoom = svgPanZoom(svgDoc.documentElement, {
-      zoomEnabled: true,
-      controlIconsEnabled: true,
-      fit: true,
-      center: true,
-      minZoom: 1,
-      maxZoom: 15,
-      preventMouseEventsDefault: true,
-      beforePan: () => !document.body.classList.contains('no-pan')
-    });
-    
-    window.addEventListener('resize', () => panZoom.resize());
-  } catch (e) {
-    console.error('PanZoom init error:', e);
-  }
 
-  // Click handler with better country detection
-  svgDoc.addEventListener('click', function(e) {
-    // Prevent zoom/pan interference
-    if (document.body.classList.contains('no-pan')) return;
-    
-    // Find country element by walking up DOM
-    let target = e.target;
-    while (target && target !== svgDoc.documentElement) {
-      if (target.id && target.id.length === 2 && !target.id.startsWith('VIEWPORT')) {
-        handleGuess(target);
-        return;
-      }
-      target = target.parentNode;
-    }
+  /* enable zoom + pan */
+  panZoom = svgPanZoom(svgDoc.documentElement, {
+    zoomEnabled: true,
+    controlIconsEnabled: true,
+    fit: true,
+    center: true,
+    contain: true,
+    minZoom: 1,
+    maxZoom: 15
+  });
+
+  /* click-vs-drag filter on each path */
+  svgDoc.querySelectorAll('path').forEach(path => {
+    let sx = 0, sy = 0, moved = false;
+
+    path.addEventListener('mousedown', e => {
+      sx = e.clientX; sy = e.clientY; moved = false;
+    });
+
+    path.addEventListener('mousemove', e => {
+      if (Math.abs(e.clientX - sx) > 3 || Math.abs(e.clientY - sy) > 3)
+        moved = true;
+    });
+
+    path.addEventListener('mouseup', e => {
+      if (!moved) handleGuess(path);          // real click
+    });
   });
 }
 
@@ -118,7 +109,7 @@ function nextPhrase() {
 function handleGuess(target) {
   const iso = target.id.toUpperCase();
   const isRight = current.iso.includes(iso);
-  const countryName = isoToName(iso);
+  const name = isoToName(target, iso);   // use element + iso
 
   // Visual feedback
   target.classList.add(isRight ? 'correct' : 'wrong');
