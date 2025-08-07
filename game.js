@@ -40,21 +40,26 @@ function nextPhrase() {
   document.getElementById('next').hidden = true;
 }
 
-function handleGuess(pathEl) {
-  const iso = pathEl.id;
+function handleGuess(target) {
+  // climb until we reach a node that has an id (the <g>)
+  while (target && !target.id) target = target.parentNode;
+  if (!target) return;                 // clicked ocean / background
+
+  const iso = target.id.toUpperCase(); // e.g. "FR"
   const isRight = current.iso.includes(iso);
 
-  pathEl.classList.add(isRight ? 'correct' : 'wrong');
-  document.getElementById('feedback').textContent =
-    isRight ? '✅ Correct!' :
-    `❌ Wrong – that’s ${iso}. Correct language: ${current.lang}`;
+  target.classList.add(isRight ? 'correct' : 'wrong');
+  feedback.textContent = isRight
+        ? '✅ Correct!'
+        : `❌ Wrong – that’s ${iso}. Correct language: ${current.lang}`;
 
   if (!isRight) {
-    const svgDoc = document.getElementById('map').contentDocument;
-    const rightId = current.iso[0];
-    const rightEl = svgDoc.getElementById(rightId);
-    if (rightEl) rightEl.classList.add('correct');
+    const right = svgDoc.getElementById(current.iso[0]);
+    if (right) right.classList.add('correct');
   }
+  nextBtn.hidden = false;
+}
+
 
   document.getElementById('next').hidden = false;
 }
