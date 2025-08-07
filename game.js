@@ -53,6 +53,17 @@ const feedbackEl = document.getElementById('feedback');
 const questionEl = document.getElementById('question');
 const nextBtn    = document.getElementById('next');
 
+function startGame(phraseData, geoData, langData) {
+  phrases = phraseData;
+  countryLangMap = langData;
+  initMap(geoData);
+  nextPhrase();
+  nextBtn.onclick = nextPhrase;
+
+  setTimeout(() => {
+    map.invalidateSize(); // fixes map render issues
+  }, 100);
+}
 
 function initMap(geoData) {
   map = L.map('map').setView([20, 0], 2);
@@ -77,12 +88,10 @@ function initMap(geoData) {
 }
 
 function nextPhrase() {
-  // Reset map styles
   countriesLayer.eachLayer(layer => {
     layer.setStyle({ fillColor: "#ccc" });
   });
 
-  // Pick random phrase
   current = phrases[Math.floor(Math.random() * phrases.length)];
   questionEl.textContent = current.text;
   feedbackEl.textContent = '';
@@ -100,7 +109,6 @@ function handleGuess(feature, layer) {
 
   if (isRight) {
     layer.setStyle({ fillColor: "green" });
-
     feedbackEl.innerHTML = `
       <div style="border: 2px solid green; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
         <strong>✅ Correct!</strong><br>
@@ -137,8 +145,4 @@ function handleGuess(feature, layer) {
   }
 
   nextBtn.hidden = false;
-    setTimeout(() => {
-    map.invalidateSize();
-  }, 100);
 }
-
