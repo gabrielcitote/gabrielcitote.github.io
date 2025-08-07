@@ -160,6 +160,8 @@ const languageFamilyMap = {
 const feedbackEl = document.getElementById('feedback');
 const questionEl = document.getElementById('question');
 const nextBtn    = document.getElementById('next');
+const showAnswerBtn = document.getElementById('show-answer');  
+const skipBtn = document.getElementById('skip');              
 
 function startGame(phraseData, geoData, langData) {
   phrases = phraseData;
@@ -167,6 +169,8 @@ function startGame(phraseData, geoData, langData) {
   initMap(geoData);
   nextPhrase();
   nextBtn.onclick = nextPhrase;
+  showAnswerBtn.onclick = showAnswer;
+  skipBtn.onclick = nextPhrase;
 
   setTimeout(() => {
     map.invalidateSize(); // fixes map render issues
@@ -256,6 +260,34 @@ function handleGuess(feature, layer) {
   document.getElementById('show-family').hidden = false;
   nextBtn.hidden = false;
 }
+
+function showAnswer() {
+  const correctNames = [];
+  countriesLayer.eachLayer(layer => {
+    const iso = iso2to3[layer.feature.id] || layer.feature.id;
+    if (current.iso.includes(iso)) {
+      layer.setStyle({ fillColor: "green" });
+      correctNames.push(layer.feature.properties.name);
+    } else {
+      layer.setStyle({ fillColor: "#ccc" });
+    }
+  });
+
+  const langText = (countryLangMap[current.iso[0]] || []).join(', ') || 'Unknown';
+
+  feedbackEl.innerHTML = `
+    <div style="border: 2px solid green; padding: 10px; border-radius: 5px;">
+      <strong>✅ Correct Answer:</strong><br>
+      Correct language: <b>${current.lang}</b><br>
+      Spoken in: ${correctNames.join(', ')}<br>
+      <i>Language(s):</i> ${langText}
+    </div>
+  `;
+
+  document.getElementById('show-family').hidden = false;
+  nextBtn.hidden = false;
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
   // Hide main game UI
