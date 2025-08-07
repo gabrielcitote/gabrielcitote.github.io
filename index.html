@@ -2,28 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OrthoGuessr</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  
+  <!-- Your CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>🧠 OrthoGuessr</h1>
-  <p id="question"></p>
-  
-  <div id="map-container">
-    <!-- index.html -->
-    <object id="map"
-            type="image/svg+xml"
-            data="assets/world.svg">   <!-- ← was “world.svg” -->
-      <span class="svg-error">Map loading failed. Please refresh the page.</span>
-    </object>
-
-  </div>
-
+  <p id="question">Loading...</p>
+  <div id="map"></div>
   <p id="feedback"></p>
   <button id="next" hidden>Next phrase</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  
+  <!-- Your JS -->
   <script src="game.js"></script>
 </body>
 </html>
