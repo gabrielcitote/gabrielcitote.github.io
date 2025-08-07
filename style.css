@@ -1,31 +1,58 @@
 body {
-  font-family: sans-serif;
-  text-align: center;
+  font-family: 'Noto Sans', sans-serif;
+  background: #fefaf6;
   margin: 0;
-  background: #fefaf6; /* warm, soft white */
+  padding: 0;
 }
 
-h1 {
+header {
+  text-align: left;
+  padding: 20px 30px;
+}
+
+#title {
   font-family: 'Bungee', cursive;
-  font-size: 2.2rem;
-  margin: 20px 0;
+  font-size: 2rem;
+  margin: 0;
+}
+
+main {
+  text-align: center;
+  padding: 10px 20px;
+}
+
+#phrase-wrapper {
+  margin: 10px auto 20px;
+}
+
+#prompt {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+#phrase-box {
+  display: inline-block;
+  background: #fff;
+  padding: 15px 25px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  min-width: 220px;
 }
 
 #question {
-  font-size: 1.3rem;
-  margin: 10px auto;
-  padding: 10px;
+  font-size: 1.2rem;
 }
 
 #map {
-  height: 50vh; /* Was 70vh */
-  width: 80%;   /* Was 90% */
-  max-width: 800px; /* Was 1000px */
-  margin: auto;
+  height: 70vh;
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px auto;
   border: 2px solid #ccc;
   border-radius: 8px;
 }
-
 
 #feedback {
   font-size: 1.1rem;
@@ -44,21 +71,10 @@ h1 {
 #next:hover {
   background: #0b7dda;
 }
-#phrase-box {
-  display: inline-block;
-  background: #fff;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  padding: 12px 20px;
-  margin: 10px auto 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  font-family: 'Noto Sans', sans-serif;
-  font-size: 1.2rem;
-}
-#credits {
-  font-size: 0.7rem;
-  color: #777;
-  margin: 30px 0 15px;
+
+footer {
   text-align: center;
-  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 20px;
 }
