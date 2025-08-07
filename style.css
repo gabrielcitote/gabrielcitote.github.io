@@ -47,9 +47,9 @@ main {
 }
 
 #map {
-  height: 50vh;
+  height: 55vh;
   width: 80%;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 20px auto;
   border: 2px solid #ccc;
   border-radius: 8px;
