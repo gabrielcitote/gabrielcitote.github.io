@@ -2,20 +2,20 @@ let map;
 let countriesLayer;
 let phrases = [];
 let current = null;
-let countryLangMap = {}; // NEW: Stores country-to-languages
+let countryLangMap = {}; // ALPHA-3 ISO → Languages
 
 const feedbackEl = document.getElementById('feedback');
 const questionEl = document.getElementById('question');
 const nextBtn    = document.getElementById('next');
 
-// Load phrases, GeoJSON map, and country languages
+// Load all game data
 Promise.all([
   fetch('data/phrases.json').then(r => r.json()),
   fetch('data/countries.geo.json').then(r => r.json()),
-  fetch('data/countries-languages.json').then(r => r.json())  // NEW
+  fetch('data/countries-languages.json').then(r => r.json())
 ]).then(([phraseData, geoData, langData]) => {
   phrases = phraseData;
-  countryLangMap = langData;  // NEW
+  countryLangMap = langData;
   initMap(geoData);
   nextPhrase();
   nextBtn.onclick = nextPhrase;
@@ -25,7 +25,7 @@ function initMap(geoData) {
   map = L.map('map').setView([20, 0], 2);
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
+    attribution: '© OpenStreetMap contributors',
     minZoom: 1,
     maxZoom: 6
   }).addTo(map);
@@ -44,10 +44,12 @@ function initMap(geoData) {
 }
 
 function nextPhrase() {
+  // Reset map styles
   countriesLayer.eachLayer(layer => {
     layer.setStyle({ fillColor: "#ccc" });
   });
 
+  // Pick random phrase
   current = phrases[Math.floor(Math.random() * phrases.length)];
   questionEl.textContent = current.text;
   feedbackEl.textContent = '';
@@ -55,7 +57,7 @@ function nextPhrase() {
 }
 
 function handleGuess(feature, layer) {
-  const iso = feature.id;
+  const iso = feature.properties.iso_a3; // 3-letter ISO
   const name = feature.properties.name;
   const isRight = current.iso.includes(iso);
 
@@ -67,12 +69,21 @@ function handleGuess(feature, layer) {
     feedbackEl.textContent = `✅ Correct! (${name}) — Languages: ${langText}`;
   } else {
     layer.setStyle({ fillColor: "red" });
-    feedbackEl.textContent = `❌ Wrong – that’s ${name}. Languages: ${langText}. Correct language: ${current.lang}`;
+
+    // Show correct countries
+    const correctNames = [];
 
     countriesLayer.eachLayer(l => {
-      const correct = current.iso.includes(l.feature.id);
-      if (correct) l.setStyle({ fillColor: "green" });
+      const correctIso = l.feature.properties.iso_a3;
+      if (current.iso.includes(correctIso)) {
+        l.setStyle({ fillColor: "green" });
+        correctNames.push(l.feature.properties.name);
+      }
     });
+
+    feedbackEl.textContent =
+      `❌ Wrong – that’s ${name}. Languages: ${langText}. ` +
+      `Correct language: ${current.lang}. Accepted countries: ${correctNames.join(', ')}`;
   }
 
   nextBtn.hidden = false;
