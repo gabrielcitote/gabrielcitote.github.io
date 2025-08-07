@@ -13,30 +13,39 @@ fetch('data/phrases.json')
 
 /* ---------- main init ---------- */
 function startGame() {
-  nextPhrase();   // show first sentence
+  nextPhrase();                     // show first sentence
 
-  /* wait for the SVG object to finish loading */
-  document.getElementById('map').addEventListener('load', () => {
-    svgDoc = document.getElementById('map').contentDocument;
+  const mapObj = document.getElementById('map');
 
-    /* enable zoom + pan */
-    svgPanZoom(svgDoc.documentElement, {
-      zoomEnabled: true,
-      controlIconsEnabled: true,
-      fit: true,
-      center: true,
-      contain: true,     // keep the map inside its box
-      minZoom: 1,
-      maxZoom: 15
-    });
-
-    /* add click listeners to every country path */
-    svgDoc.querySelectorAll('path').forEach(p =>
-      p.addEventListener('click', () => handleGuess(p))
-    );
-  });
+  // If SVG already cached & ready, init immediately; else wait for load event
+  if (mapObj.contentDocument) {
+    onSvgLoaded();
+  } else {
+    mapObj.addEventListener('load', onSvgLoaded);
+  }
 
   nextBtn.onclick = nextPhrase;
+}
+
+/* ---------- called once when SVG is ready ---------- */
+function onSvgLoaded() {
+  svgDoc = document.getElementById('map').contentDocument;
+
+  // enable zoom + pan
+  window.panZoom = svgPanZoom(svgDoc.documentElement, {
+    zoomEnabled: true,
+    controlIconsEnabled: true,
+    fit: true,
+    center: true,
+    contain: true,     // keep map within box
+    minZoom: 1,
+    maxZoom: 15
+  });
+
+  // add click listeners to every country path
+  svgDoc.querySelectorAll('path').forEach(p =>
+    p.addEventListener('click', () => handleGuess(p))
+  );
 }
 
 /* ---------- show a new random phrase ---------- */
@@ -54,7 +63,7 @@ function nextPhrase() {
 
 /* ---------- handle a country click ---------- */
 function handleGuess(target) {
-  /* Walk up the DOM until we reach the <g id="XX"> that owns the ISO code */
+  // Walk up the DOM to the <g id="XX"> with the ISO code
   while (target && !target.id) target = target.parentNode;
   if (!target) return;                // clicked the ocean
 
@@ -66,7 +75,7 @@ function handleGuess(target) {
     ? '✅ Correct!'
     : `❌ Wrong – that’s ${iso}. Correct language: ${current.lang}`;
 
-  /* highlight one correct country if user guessed wrong */
+  // highlight one correct country if user guessed wrong
   if (!isRight && svgDoc) {
     const rightEl = svgDoc.getElementById(current.iso[0]);
     if (rightEl) rightEl.classList.add('correct');
