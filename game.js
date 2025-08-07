@@ -12,13 +12,16 @@ function startGame() {
     .addEventListener('load', () => {
       const svgDoc = document.getElementById('map').contentDocument;
 
-      // ✅ Enable zoom and pan
-      svgPanZoom(svgDoc.documentElement, {
-        zoomEnabled: true,
-        controlIconsEnabled: true,
-        fit: true,
-        center: true
-      });
+        svgPanZoom(svgDoc.documentElement, {
+          zoomEnabled: true,
+          controlIconsEnabled: true,
+          fit: true,
+          center: true,
+          contain: true,   // keep map inside the box
+          minZoom: 1,
+          maxZoom: 15
+        });
+
 
       svgDoc.querySelectorAll('path').forEach(p => {
         p.addEventListener('click', () => handleGuess(p));
