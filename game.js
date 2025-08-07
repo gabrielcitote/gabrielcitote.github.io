@@ -48,6 +48,113 @@ const iso2to3 = {
   "VN": "VNM", "VG": "VGB", "VI": "VIR", "WF": "WLF", "EH": "ESH", "YE": "YEM",
   "ZM": "ZMB", "ZW": "ZWE"
 };
+const languageFamilyMap = {
+  "English": "Germanic",
+  "German": "Germanic",
+  "Dutch": "Germanic",
+  "Afrikaans": "Germanic",
+  "Swedish": "Germanic",
+  "Norwegian": "Germanic",
+  "Danish": "Germanic",
+  "Icelandic": "Germanic",
+  "Frisian": "Germanic",
+  "Luxembourgish": "Germanic",
+
+  "French": "Romance",
+  "Spanish": "Romance",
+  "Portuguese": "Romance",
+  "Italian": "Romance",
+  "Romanian": "Romance",
+  "Catalan": "Romance",
+  "Galician": "Romance",
+  "Occitan": "Romance",
+
+  "Russian": "Slavic",
+  "Polish": "Slavic",
+  "Ukrainian": "Slavic",
+  "Belarusian": "Slavic",
+  "Czech": "Slavic",
+  "Slovak": "Slavic",
+  "Slovene": "Slavic",
+  "Serbian": "Slavic",
+  "Croatian": "Slavic",
+  "Bosnian": "Slavic",
+  "Macedonian": "Slavic",
+  "Bulgarian": "Slavic",
+  "Montenegrin": "Slavic",
+
+  "Finnish": "Uralic",
+  "Estonian": "Uralic",
+  "Hungarian": "Uralic",
+
+  "Mandarin": "Sino-Tibetan",
+  "Cantonese": "Sino-Tibetan",
+  "Wu": "Sino-Tibetan",
+  "Hakka": "Sino-Tibetan",
+  "Min Nan": "Sino-Tibetan",
+  "Tibetan": "Sino-Tibetan",
+  "Burmese": "Sino-Tibetan",
+
+  "Hindi": "Indo-Aryan",
+  "Urdu": "Indo-Aryan",
+  "Bengali": "Indo-Aryan",
+  "Punjabi": "Indo-Aryan",
+  "Marathi": "Indo-Aryan",
+  "Gujarati": "Indo-Aryan",
+  "Sindhi": "Indo-Aryan",
+  "Sinhala": "Indo-Aryan",
+  "Nepali": "Indo-Aryan",
+
+  "Tamil": "Dravidian",
+  "Telugu": "Dravidian",
+  "Kannada": "Dravidian",
+  "Malayalam": "Dravidian",
+
+  "Turkish": "Turkic",
+  "Kazakh": "Turkic",
+  "Uzbek": "Turkic",
+  "Kyrgyz": "Turkic",
+  "Tatar": "Turkic",
+  "Azerbaijani": "Turkic",
+  "Uyghur": "Turkic",
+  "Turkmen": "Turkic",
+
+  "Arabic": "Semitic",
+  "Hebrew": "Semitic",
+  "Amharic": "Semitic",
+  "Tigrinya": "Semitic",
+  "Maltese": "Semitic",
+
+  "Japanese": "Japonic",
+  "Korean": "Koreanic",
+
+  "Vietnamese": "Austroasiatic",
+  "Khmer": "Austroasiatic",
+
+  "Tagalog": "Austronesian",
+  "Malagasy": "Austronesian",
+  "Malay": "Austronesian",
+  "Indonesian": "Austronesian",
+  "Javanese": "Austronesian",
+  "Cebuano": "Austronesian",
+
+  "Swahili": "Niger-Congo",
+  "Yoruba": "Niger-Congo",
+  "Igbo": "Niger-Congo",
+  "Zulu": "Niger-Congo",
+  "Shona": "Niger-Congo",
+  "Xhosa": "Niger-Congo",
+  "Lingala": "Niger-Congo",
+  "Kinyarwanda": "Niger-Congo",
+  "Kirundi": "Niger-Congo",
+
+  "Somali": "Afroasiatic",
+  "Hausa": "Afroasiatic",
+  "Berber": "Afroasiatic",
+
+  "Basque": "Language Isolate",
+  "Esperanto": "Constructed"
+}
 
 const feedbackEl = document.getElementById('feedback');
 const questionEl = document.getElementById('question');
@@ -89,8 +196,8 @@ function initMap(geoData) {
 
 function nextPhrase() {
   countriesLayer.eachLayer(layer => {
-    layer.setStyle({ fillColor: "#ccc" });
-  });
+  layer.setStyle({ fillColor: "#ccc", fillOpacity: 0.7 });
+});
 
   current = phrases[Math.floor(Math.random() * phrases.length)];
   questionEl.textContent = current.text;
@@ -170,3 +277,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+document.getElementById('show-family').addEventListener('click', () => {
+  const currentLang = current.lang;
+  const currentFamily = languageFamilyMap[currentLang];
+
+  if (!currentFamily) {
+    feedbackEl.innerHTML += `
+      <div style="border: 2px solid orange; padding: 10px; margin-top: 10px; border-radius: 5px;">
+        ⚠️ No family info for <b>${currentLang}</b>.
+      </div>
+    `;
+    return;
+  }
+
+  // Find all ISO country codes that have languages in the same family
+  const matchingISOs = Object.entries(countryLangMap)
+    .filter(([iso, langs]) =>
+      langs.some(lang => languageFamilyMap[lang] === currentFamily)
+    )
+    .map(([iso]) => iso);
+
+  // Highlight countries
+  countriesLayer.eachLayer(layer => {
+    const iso = iso2to3[layer.feature.id] || layer.feature.id;
+    if (matchingISOs.includes(iso)) {
+      layer.setStyle({ fillColor: 'gold' });
+    }
+  });
+
+  // Show family info
+  const members = Object.entries(languageFamilyMap)
+    .filter(([_, fam]) => fam === currentFamily)
+    .map(([lang]) => lang)
+    .sort()
+    .join(', ');
+
+  feedbackEl.innerHTML += `
+    <div style="border: 2px dashed orange; padding: 10px; margin-top: 10px; border-radius: 5px;">
+      <strong>🌐 Language Family:</strong><br>
+      <b>${currentFamily}</b><br>
+      Family Members: ${members}
+    </div>
+  `;
+});
+
