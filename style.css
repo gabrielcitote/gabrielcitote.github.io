@@ -43,13 +43,13 @@ h1 {
   background: #0b7dda;
 }
 #phrase-box {
-  width: fit-content;
-  max-width: 90%;
-  margin: 20px auto;
-  padding: 15px 20px;
-  background-color: #f9f9f9;
-  border-left: 6px solid #2196F3;
-  border-radius: 6px;
-  font-size: 1.4rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: inline-block;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin: 10px auto 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1.2rem;
 }
