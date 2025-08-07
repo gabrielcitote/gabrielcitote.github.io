@@ -196,13 +196,15 @@ function initMap(geoData) {
 
 function nextPhrase() {
   countriesLayer.eachLayer(layer => {
-  layer.setStyle({ fillColor: "#ccc", fillOpacity: 0.7 });
-});
+    layer.setStyle({ fillColor: "#ccc", fillOpacity: 0.7 });
+  });
 
   current = phrases[Math.floor(Math.random() * phrases.length)];
   questionEl.textContent = current.text;
   feedbackEl.textContent = '';
   nextBtn.hidden = true;
+
+  document.getElementById('show-family').hidden = true;
 }
 
 function handleGuess(feature, layer) {
