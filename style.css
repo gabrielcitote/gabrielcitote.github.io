@@ -136,20 +136,20 @@ footer {
 }
 
 #next, #show-answer, #skip, #show-family {
-  background-color: #dff5e1;            /* soft green */
-  border: 2px solid #4CAF50;            /* rich green border */
-  color: #2b6e2b;                       /* darker green text */
+  background-color: #a5d6a7;         /* light green */
+  border: none;
+  color: white;                      /* white text */
   border-radius: 6px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
   margin: 10px 6px;
-  font-weight: bold;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 #next:hover, #show-answer:hover, #skip:hover, #show-family:hover {
-  background-color: #c1eec7;
+  background-color: #81c784;         /* slightly darker on hover */
   transform: scale(1.05);
 }
 
