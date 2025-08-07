@@ -24,16 +24,20 @@ function startGame() {
   nextPhrase();                     // show first sentence
 
   const mapObj = document.getElementById('map');
-  if (mapObj.contentDocument) {
+
+  // Init once—whether SVG is cached or fires 'load'
+  const tryInit = () => {
+    if (panZoom || !mapObj.contentDocument) return;        // already done or not ready
     onSvgLoaded();
-  } else {
-    mapObj.addEventListener('load', onSvgLoaded);
-  }
+  };
+
+  if (mapObj.contentDocument) tryInit();
+  mapObj.addEventListener('load', tryInit);
 
   nextBtn.onclick = nextPhrase;
 }
 
-function onSvgLoaded(){
+function onSvgLoaded() {
   svgDoc = document.getElementById('map').contentDocument;
 
   /* enable zoom + pan */
@@ -47,16 +51,17 @@ function onSvgLoaded(){
     maxZoom: 15
   });
 
-  /* click without drag helper */
+  /* click-vs-drag helper */
   let startX, startY, moved;
   svgDoc.addEventListener('mousedown', e => {
     startX = e.clientX; startY = e.clientY; moved = false;
   });
   svgDoc.addEventListener('mousemove', e => {
-    if(Math.abs(e.clientX-startX) > 3 || Math.abs(e.clientY-startY) > 3) moved = true;
+    if (Math.abs(e.clientX - startX) > 3 || Math.abs(e.clientY - startY) > 3)
+      moved = true;
   });
   svgDoc.addEventListener('mouseup', e => {
-    if(!moved) handleGuess(e.target);
+    if (!moved) handleGuess(e.target);
   });
 }
 
