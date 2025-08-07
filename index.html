@@ -11,26 +11,54 @@
   <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
-  <header>
-  <h1 id="title">🧠 LingoGuessr</h1>
-</header>
-
-<main>
-  <div id="phrase-wrapper">
-    <p id="prompt">Where is this language spoken?</p>
-    <div id="phrase-box">
-      <div id="question">[Example phrase will appear here]</div>
+  <!-- Start screen -->
+  <div id="start-screen">
+    <div id="start-content">
+      <h1>🧠 LingoGuessr</h1>
+      <p>Can you guess where this language is spoken?</p>
+      <button id="start-btn">Start Game</button>
     </div>
   </div>
 
-  <div id="map"></div>
-  <p id="feedback"></p>
-  <button id="next" hidden>Next phrase</button>
-</main>
+  <!-- Actual game UI (hidden at first) -->
+  <header>
+    <h1 id="title">🧠 LingoGuessr</h1>
+  </header>
 
-<footer>
-  <p id="credit">✨ Created by Chung-I</p>
-</footer>
+  <main>
+    <div id="phrase-wrapper">
+      <p id="prompt">Where is this language spoken?</p>
+      <div id="phrase-box">
+        <div id="question">[Example phrase will appear here]</div>
+      </div>
+    </div>
+
+    <div id="map"></div>
+    <p id="feedback"></p>
+    <button id="next" hidden>Next phrase</button>
+  </main>
+
+  <footer>
+    <p id="credit">✨ Created by Chung-I</p>
+  </footer>
+
+  <!-- Leaflet + JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Hide game initially
+    document.querySelector('header').style.display = 'none';
+    document.querySelector('main').style.display = 'none';
+    document.querySelector('footer').style.display = 'none';
+
+    // Show game on start
+    document.getElementById('start-btn').addEventListener('click', () => {
+      document.getElementById('start-screen').style.display = 'none';
+      document.querySelector('header').style.display = 'block';
+      document.querySelector('main').style.display = 'block';
+      document.querySelector('footer').style.display = 'block';
+    });
+  </script>
 </body>
+
 </html>
 
