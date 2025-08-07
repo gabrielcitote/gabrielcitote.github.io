@@ -42,8 +42,10 @@
     <p id="credit">✨ Created by Chung-I</p>
   </footer>
 
-  <!-- Leaflet + JS -->
+    <!-- Leaflet + JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Start screen logic -->
   <script>
     // Hide game initially
     document.querySelector('header').style.display = 'none';
@@ -56,8 +58,14 @@
       document.querySelector('header').style.display = 'block';
       document.querySelector('main').style.display = 'block';
       document.querySelector('footer').style.display = 'block';
+
+      // Optional: start the game immediately
+      if (typeof startGame === 'function') startGame(); // <-- if you have a function like this in game.js
     });
   </script>
+
+  <!-- Main game logic -->
+  <script src="game.js"></script>
 </body>
 
 </html>
