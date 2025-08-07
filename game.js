@@ -251,6 +251,7 @@ function handleGuess(feature, layer) {
     `;
   }
 
+  document.getElementById('show-family').hidden = false;
   nextBtn.hidden = false;
 }
 
