@@ -1,99 +1,71 @@
-/* ---------- global state ---------- */
+let map;
+let countriesLayer;
 let phrases = [];
-let current  = null;
-let svgDoc   = null;          // SVG DOM once loaded
-let panZoom  = null;          // svg-pan-zoom instance
+let current = null;
+
 const feedbackEl = document.getElementById('feedback');
+const questionEl = document.getElementById('question');
 const nextBtn    = document.getElementById('next');
 
-/* ---------- load phrases, then start ---------- */
-fetch('data/phrases.json')
-  .then(r => r.json())
-  .then(json => { phrases = json; startGame(); });
-
-/* ---------- tiny helper: ISO ➜ country name (from <title>) ---------- */
-function isoToName(el, iso) {
-  const t = el && el.querySelector ? el.querySelector('title') : null;
-  return t && t.textContent.trim() ? t.textContent.trim() : iso;
-}
-
-/* ---------- game bootstrapping ---------- */
-function startGame() {
+// Load phrases and GeoJSON map
+Promise.all([
+  fetch('data/phrases.json').then(r => r.json()),
+  fetch('data/countries.geo.json').then(r => r.json())
+]).then(([phraseData, geoData]) => {
+  phrases = phraseData;
+  initMap(geoData);
   nextPhrase();
-  initMap();
   nextBtn.onclick = nextPhrase;
-}
+});
 
-/* ---------- load the SVG map and init pan-zoom ---------- */
-function initMap() {
-  const mapObj = document.getElementById('map');
+function initMap(geoData) {
+  map = L.map('map').setView([20, 0], 2);
 
-  const tryInit = () => {
-    if (!mapObj.contentDocument) return;   // still not ready
-    onSvgLoaded();
-  };
-
-  if (mapObj.contentDocument) tryInit();           // cached
-  mapObj.addEventListener('load', tryInit);        // or freshly loaded
-}
-
-function onSvgLoaded() {
-  svgDoc = document.getElementById('map').contentDocument;
-
-  /* zoom + pan */
-  panZoom = svgPanZoom(svgDoc.documentElement, {
-    zoomEnabled: true,
-    controlIconsEnabled: true,
-    fit: true,
-    center: true,
-    contain: true,
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
     minZoom: 1,
-    maxZoom: 15
+    maxZoom: 6
+  }).addTo(map);
+
+  countriesLayer = L.geoJSON(geoData, {
+    style: {
+      color: "#444",
+      weight: 1,
+      fillColor: "#ccc",
+      fillOpacity: 0.7
+    },
+    onEachFeature: (feature, layer) => {
+      layer.on('click', () => handleGuess(feature, layer));
+    }
+  }).addTo(map);
+}
+
+function nextPhrase() {
+  countriesLayer.eachLayer(layer => {
+    layer.setStyle({ fillColor: "#ccc" });
   });
 
-  /* single click listener — svg-pan-zoom suppresses click after a drag */
-  svgDoc.addEventListener('click', handleMapClick);
-}
-
-/* ---------- click dispatcher ---------- */
-function handleMapClick(e) {
-  let el = e.target;
-
-  // Climb until a 2-letter ISO id that is not VIEWPORT-noise
-  while (el && (!el.id || el.id.length !== 2 || el.id.startsWith('VIEWPORT'))) {
-    el = el.parentNode;
-  }
-  if (el && el.id && el.id.length === 2) handleGuess(el);
-}
-
-/* ---------- new prompt ---------- */
-function nextPhrase() {
-  if (svgDoc) {
-    svgDoc.querySelectorAll('.correct, .wrong')
-          .forEach(el => el.classList.remove('correct', 'wrong'));
-  }
-
   current = phrases[Math.floor(Math.random() * phrases.length)];
-  document.getElementById('question').textContent = current.text;
+  questionEl.textContent = current.text;
   feedbackEl.textContent = '';
   nextBtn.hidden = true;
 }
 
-/* ---------- evaluate guess ---------- */
-function handleGuess(countryEl) {
-  const iso   = countryEl.id.toUpperCase();
-  const name  = isoToName(countryEl, iso);
-  const right = current.iso.includes(iso);
+function handleGuess(feature, layer) {
+  const iso = feature.id;
+  const name = feature.properties.name;
+  const isRight = current.iso.includes(iso);
 
-  countryEl.classList.add(right ? 'correct' : 'wrong');
-  feedbackEl.textContent = right
-    ? `✅ Correct! (${name})`
-    : `❌ Wrong – that’s ${name}. Correct language: ${current.lang}`;
+  if (isRight) {
+    layer.setStyle({ fillColor: "green" });
+    feedbackEl.textContent = `✅ Correct! (${name})`;
+  } else {
+    layer.setStyle({ fillColor: "red" });
+    feedbackEl.textContent = `❌ Wrong – that’s ${name}. Correct language: ${current.lang}`;
 
-  if (!right && svgDoc) {
-    current.iso.forEach(correctIso => {
-      const ok = svgDoc.getElementById(correctIso);
-      if (ok) ok.classList.add('correct');
+    countriesLayer.eachLayer(l => {
+      const correct = current.iso.includes(l.feature.id);
+      if (correct) l.setStyle({ fillColor: "green" });
     });
   }
 
