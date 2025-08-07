@@ -119,3 +119,17 @@ footer {
   background-color: #0b7dda;
 }
 
+#show-family {
+  margin-top: 10px;
+  padding: 8px 14px;
+  font-weight: bold;
+  background-color: #f9c74f;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#show-family:hover {
+  background-color: #f9844a;
+}
