@@ -112,7 +112,14 @@ function handleGuess(feature, layer) {
 
   if (isRight) {
     layer.setStyle({ fillColor: "green" });
-    feedbackEl.textContent = `✅ Correct! (${name}) — Languages: ${langText}`;
+
+    feedbackEl.innerHTML = `
+      <div style="border: 2px solid green; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+        <strong>✅ Correct!</strong><br>
+        <b>${name}</b><br>
+        Languages: ${langText}
+      </div>
+    `;
   } else {
     layer.setStyle({ fillColor: "red" });
 
@@ -125,10 +132,22 @@ function handleGuess(feature, layer) {
       }
     });
 
-    feedbackEl.textContent =
-      `❌ Wrong – that’s ${name}. Languages: ${langText}. ` +
-      `Correct language: ${current.lang}. Accepted countries: ${correctNames.join(', ')}`;
+    feedbackEl.innerHTML = `
+      <div style="border: 2px solid red; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+        <strong>❌ Your Guess:</strong><br>
+        That’s <b>${name}</b><br>
+        <i>Languages detected:</i> ${langText}<br>
+        <i>Your selected country:</i> ${name}
+      </div>
+
+      <div style="border: 2px solid green; padding: 10px; border-radius: 5px;">
+        <strong>✅ Correct Answer:</strong><br>
+        Correct language: <b>${current.lang}</b><br>
+        Accepted countries: ${correctNames.join(', ')}
+      </div>
+    `;
   }
 
   nextBtn.hidden = false;
 }
+
