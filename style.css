@@ -60,18 +60,6 @@ main {
   margin: 15px auto;
 }
 
-#next {
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  background: #2196F3;
-  color: white;
-  cursor: pointer;
-}
-#next:hover {
-  background: #0b7dda;
-}
 
 footer {
   text-align: center;
@@ -120,38 +108,71 @@ footer {
   background-color: #0b7dda;
 }
 
-#show-family {
-  margin-top: 10px;
-  padding: 8px 14px;
-  font-weight: bold;
-  background-color: #f9c74f;
+
+#show-answer {
+  background-color: #4CAF50;   /* green */
+  color: white;
+  padding: 8px 16px;
+  font-size: 16px;
   border: none;
   border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
+}
+
+#show-answer:hover {
+  background-color: #45a049;
+}
+
+#skip {
+  background-color: #2196F3;   /* blue */
+  color: white;
+  padding: 8px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#skip:hover {
+  background-color: #0b7dda;
+}
+
+#show-family {
+  background-color: #f9c74f;   /* yellow */
+  color: white;
+  padding: 8px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 #show-family:hover {
-  background-color: #f9844a;
+  background-color: #f4a261;
 }
 
-#next, #show-answer, #skip, #show-family {
-  background-color: #a5d6a7;         /* light green */
-  border: none;
-  color: white;                      /* white text */
-  border-radius: 6px;
-  padding: 10px 20px;
+#next {
+  background-color: #2196F3;   /* blue */
+  color: white;
+  padding: 8px 16px;
   font-size: 16px;
+  border: none;
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  margin: 10px 6px;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease;
 }
 
-#next:hover, #show-answer:hover, #skip:hover, #show-family:hover {
-  background-color: #81c784;         /* slightly darker on hover */
-  transform: scale(1.05);
+#next:hover {
+  background-color: #0b7dda;
 }
+
 
 #phrase-box {
   background-color: white;
