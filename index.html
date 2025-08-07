@@ -1,21 +1,38 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>OrthoGuessr – SVG Edition</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrthoGuessr – Language Geography Game</title>
   <link rel="stylesheet" href="style.css">
+  <meta name="description" content="Guess which country a language phrase comes from">
 </head>
 <body>
-  <h1>🧠 OrthoGuessr</h1>
+  <header>
+    <h1>🧠 OrthoGuessr</h1>
+    <p class="subtitle">Guess the language origin</p>
+  </header>
 
-  <p id="question"></p>
+  <main>
+    <div id="game-container">
+      <p id="question" aria-live="polite"></p>
+      
+      <div id="map-container">
+        <object id="map" type="image/svg+xml" data="world.svg" aria-label="Interactive world map" tabindex="0">
+          <p>Your browser doesn't support SVG. Please use a modern browser.</p>
+        </object>
+      </div>
 
-  <object id="map" type="image/svg+xml" data="path/to/world.svg"></object>
+      <div id="feedback-container">
+        <p id="feedback" aria-live="assertive"></p>
+        <button id="next" hidden>Next phrase →</button>
+      </div>
+    </div>
+  </main>
 
-  <p id="feedback"></p>
-  <button id="next" hidden>Next phrase</button>
-  <!-- zoom / pan library -->
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
-  <script src="game.js"></script>
+  <script src="game.js" defer></script>
 </body>
 </html>
 
