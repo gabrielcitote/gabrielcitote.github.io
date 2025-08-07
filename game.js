@@ -34,12 +34,30 @@ function initMap() {
   const mapObj = document.getElementById('map');
   
   const tryInit = () => {
-    if (panZoom || !mapObj.contentDocument) return;
+    if (!mapObj.contentDocument) {
+      console.error('SVG failed to load');
+      return;
+    }
     onSvgLoaded();
   };
 
-  if (mapObj.contentDocument) tryInit();
-  mapObj.addEventListener('load', tryInit);
+  // Set timeout as fallback
+  const loadTimeout = setTimeout(() => {
+    if (!panZoom) {
+      console.error('SVG loading timed out');
+    }
+  }, 3000);
+
+  mapObj.addEventListener('load', () => {
+    clearTimeout(loadTimeout);
+    tryInit();
+  });
+
+  // Try immediately if already loaded
+  if (mapObj.contentDocument) {
+    clearTimeout(loadTimeout);
+    tryInit();
+  }
 }
 
 function onSvgLoaded() {
