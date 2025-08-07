@@ -16,13 +16,14 @@ h1 {
 }
 
 #map {
-  height: 70vh;
-  width: 90%;
-  max-width: 1000px;
+  height: 50vh; /* Was 70vh */
+  width: 80%;   /* Was 90% */
+  max-width: 800px; /* Was 1000px */
   margin: auto;
   border: 2px solid #ccc;
   border-radius: 8px;
 }
+
 
 #feedback {
   font-size: 1.1rem;
