@@ -11,6 +11,15 @@ function startGame() {
   document.getElementById('map')
     .addEventListener('load', () => {
       const svgDoc = document.getElementById('map').contentDocument;
+
+      // ✅ Enable zoom and pan
+      svgPanZoom(svgDoc.documentElement, {
+        zoomEnabled: true,
+        controlIconsEnabled: true,
+        fit: true,
+        center: true
+      });
+
       svgDoc.querySelectorAll('path').forEach(p => {
         p.addEventListener('click', () => handleGuess(p));
       });
@@ -18,6 +27,7 @@ function startGame() {
 
   document.getElementById('next').onclick = nextPhrase;
 }
+
 
 function nextPhrase() {
   const svgDoc = document.getElementById('map').contentDocument;
