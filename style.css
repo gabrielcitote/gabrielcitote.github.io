@@ -9,11 +9,14 @@ h1 {
   margin: 20px 0;
 }
 
-object#map {
+object#map{
   width: 100%;
-  height: 60vh;      /* instead of 80vh */
+  max-width: 900px;   /* keeps it from spanning the full viewport */
+  height: 60vh;       /* shorter box */
+  margin: 0 auto;     /* centers it */
   border: 1px solid #ccc;
 }
+
 
 
 svg path {
