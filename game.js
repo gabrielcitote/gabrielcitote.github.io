@@ -239,16 +239,14 @@ function handleGuess(feature, layer) {
 
     feedbackEl.innerHTML = `
       <div style="border: 2px solid red; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-        <strong>❌ Your Guess:</strong><br>
-        That’s <b>${name}</b><br>
-        <i>Languages detected:</i> ${langText}<br>
-        <i>Your selected country:</i> ${name}
+        <strong>❌ Your Guess:</strong> <b>${name}</b><br>
+        <i>Language(s) spoken:</i> ${langText}
       </div>
-
+    
       <div style="border: 2px solid green; padding: 10px; border-radius: 5px;">
         <strong>✅ Correct Answer:</strong><br>
         Correct language: <b>${current.lang}</b><br>
-        Accepted countries: ${correctNames.join(', ')}
+        Spoken in: ${correctNames.join(', ')}
       </div>
     `;
   }
