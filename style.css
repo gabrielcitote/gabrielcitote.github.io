@@ -116,3 +116,13 @@ body.dragging, body.dragging * {
   touch-action: none;
   -ms-touch-action: none;
 }
+
+.svg-error {
+  color: #d32f2f;
+  font-weight: bold;
+  display: none; /* Hidden by default */
+}
+
+object#map[data] + .svg-error {
+  display: block; /* Show only if SVG fails */
+}
