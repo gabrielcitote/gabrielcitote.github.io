@@ -53,18 +53,6 @@ const feedbackEl = document.getElementById('feedback');
 const questionEl = document.getElementById('question');
 const nextBtn    = document.getElementById('next');
 
-// Load all game data
-Promise.all([
-  fetch('data/phrases.json').then(r => r.json()),
-  fetch('data/countries.geo.json').then(r => r.json()),
-  fetch('data/countries-languages.json').then(r => r.json())
-]).then(([phraseData, geoData, langData]) => {
-  phrases = phraseData;
-  countryLangMap = langData;
-  initMap(geoData);
-  nextPhrase();
-  nextBtn.onclick = nextPhrase;
-});
 
 function initMap(geoData) {
   map = L.map('map').setView([20, 0], 2);
@@ -149,5 +137,8 @@ function handleGuess(feature, layer) {
   }
 
   nextBtn.hidden = false;
+    setTimeout(() => {
+    map.invalidateSize();
+  }, 100);
 }
 
