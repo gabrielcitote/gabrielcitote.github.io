@@ -261,6 +261,9 @@ function handleGuess(feature, layer) {
 
   document.getElementById('show-family').hidden = false;
   nextBtn.hidden = false;
+
+  document.getElementById('show-answer').hidden = true;
+  document.getElementById('skip').hidden = true;
 }
 
 function showAnswer() {
