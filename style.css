@@ -304,11 +304,13 @@ footer {
 }
 
 .start-header h1 {
-  margin: 0;
-  font-size: 2.8rem;
-  letter-spacing: 0.5px;
+  margin-bottom: 0.2rem;
+  font-size: 2.8rem; /* slightly bigger */
+  letter-spacing: 1px; /* gives it a wider, more logo-like feel */
 }
 
 .start-header .brand {
   font-family: 'Bungee', cursive;
+  text-shadow: 1px 1px 0 #00000010; /* subtle depth */
 }
+
