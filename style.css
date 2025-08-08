@@ -68,16 +68,18 @@ footer {
 /* Center box styling */
 /* —— START SCREEN (replace your whole start-screen block with this) —— */
 /* Start overlay — card stays perfectly centered */
+html, body { height: 100%; }  /* makes centering reliable */
+
 #start-screen {
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;               /* centers the card only */
+  display: flex;                 /* center the CARD only */
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #fffaf3, #f5efe7);
   z-index: 9999;
 }
 
-/* Your white card */
 #start-content {
   width: min(720px, 92vw);
   background: #fff;
@@ -87,18 +89,18 @@ footer {
   text-align: center;
 }
 
-/* Credit sits at the bottom, doesn’t affect centering */
+/* Credit is pinned to viewport bottom, centered, not part of layout */
 #start-credit {
-  position: absolute;
+  position: fixed;
   left: 50%;
-  bottom: 28px;                     /* adjust spacing from bottom */
+  bottom: 28px;
   transform: translateX(-50%);
   margin: 0;
   font-size: 0.95rem;
   color: #7a7a7a;
   font-style: italic;
+  pointer-events: none;          /* avoid stray clicks */
 }
-
 
 /* mode row */
 
