@@ -6,11 +6,11 @@ body {
 }
 
 h1 {
-  margin-bottom: 0.3em; /* smaller gap below the title */
+  margin-bottom: 0.2em; /* smaller gap below the title */
 }
 
 p {
-  margin-top: 0.2em; /* smaller gap above the paragraph */
+  margin-top: 0.1em; /* smaller gap above the paragraph */
 }
 
 header {
@@ -332,7 +332,7 @@ html, body { height: 100%; }  /* makes centering reliable */
 
 .start-header h1 {
   margin-bottom: 0.2rem;
-  font-size: 2.8rem; /* slightly bigger */
+  font-size: 3.0rem; /* slightly bigger */
   letter-spacing: 1px; /* gives it a wider, more logo-like feel */
 }
 
