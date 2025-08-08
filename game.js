@@ -330,19 +330,25 @@ function langDifficulty(lang) {
 function startGame(phraseData, geoData, langData) {
   phrases = phraseData;
   countryLangMap = langData;
+  // Debug: check for missing languages in difficulty sets or family map
+  phrases.forEach(p => {
+  if (!EasyLanguages.has(p.lang) && !MediumLanguages.has(p.lang) && !HardLanguages.has(p.lang)) {
+    console.warn(`Language missing from difficulty sets: ${p.lang}`);
+  }
+  if (!languageFamilyMap[p.lang]) {
+    console.warn(`Language missing from family map: ${p.lang}`);
+  }
+});
   initMap(geoData);
-  nextPhrase();
-  // Set initial mode and hook changes
-  applyMode('all'); // ensures workingPhrases is set + map is prepared
+  applyMode('all');
   modeSelect.addEventListener('change', (e) => applyMode(e.target.value));
   nextBtn.onclick = nextPhrase;
   showAnswerBtn.onclick = showAnswer;
   skipBtn.onclick = nextPhrase;
 
-  setTimeout(() => {
-    map.invalidateSize(); // fixes map render issues
-  }, 100);
+  setTimeout(() => map.invalidateSize(), 100);
 }
+
 
 function initMap(geoData) {
   map = L.map('map').setView([20, 0], 2);
@@ -361,7 +367,6 @@ function initMap(geoData) {
       fillOpacity: 0.7
     },
     onEachFeature: (feature, layer) => {
-      layer.on('click', () => handleGuess(feature, layer));
     }
   }).addTo(map);
 }
@@ -497,11 +502,17 @@ function showAnswer() {
       layer.setStyle({ fillColor: "green" });
       correctNames.push(layer.feature.properties.name);
     } else {
-      layer.setStyle({ fillColor: "#ccc" });
+      // keep dimming state consistent
+      const cur = layer.options.fillOpacity ?? 0.7;
+      const isDimmed = cur < 0.7;
+      layer.setStyle({ fillColor: "#ccc", fillOpacity: isDimmed ? 0.15 : 0.7 });
     }
   });
 
-  const langText = (countryLangMap[current.iso[0]] || []).join(', ') || 'Unknown';
+  const allLangs = [...new Set(
+    current.iso.flatMap(iso => countryLangMap[iso] || [])
+  )];
+  const langText = allLangs.length ? allLangs.join(', ') : 'Unknown';
 
   feedbackEl.innerHTML = `
     <div style="border: 2px solid green; padding: 10px; border-radius: 5px;">
@@ -517,84 +528,3 @@ function showAnswer() {
   document.getElementById('show-answer').hidden = true;
   document.getElementById('skip').hidden = true;
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Hide main game UI
-  document.querySelector('header').style.display = 'none';
-  document.querySelector('main').style.display = 'none';
-  document.querySelector('footer').style.display = 'none';
-
-  // Show game on button click
-  document.getElementById('start-btn').addEventListener('click', () => {
-    document.getElementById('start-screen').style.display = 'none';
-    document.querySelector('header').style.display = 'block';
-    document.querySelector('main').style.display = 'block';
-    document.querySelector('footer').style.display = 'block';
-
-    // Load data and start game
-    Promise.all([
-      fetch('data/phrases.json').then(r => r.json()),
-      fetch('data/countries.geo.json').then(r => r.json()),
-      fetch('data/countries-languages.json').then(r => r.json())
-    ]).then(([phraseData, geoData, langData]) => {
-      startGame(phraseData, geoData, langData);
-    });
-  });
-});
-
-document.getElementById('show-family').addEventListener('click', () => {
-  if (familyShown) return;  // Prevent duplicates
-  familyShown = true;
-
-  const currentLang = current.lang;
-  const currentFamily = languageFamilyMap[currentLang];
-
-  if (!currentFamily) {
-    feedbackEl.innerHTML += `
-      <div style="border: 2px solid orange; padding: 10px; margin-top: 10px; border-radius: 5px;">
-        ⚠️ No family info for <b>${currentLang}</b>.
-      </div>
-    `;
-    return;
-  }
-
-  const matchingISOs = Object.entries(countryLangMap)
-    .filter(([iso, langs]) =>
-      langs.some(lang => languageFamilyMap[lang] === currentFamily)
-    )
-    .map(([iso]) => iso);
-
-  countriesLayer.eachLayer(layer => {
-    const iso = iso2to3[layer.feature.id] || layer.feature.id;
-    if (matchingISOs.includes(iso)) {
-      layer.setStyle({ fillColor: 'gold' });
-    }
-  });
-
-  const members = Object.entries(languageFamilyMap)
-    .filter(([_, fam]) => fam === currentFamily)
-    .map(([lang]) => lang)
-    .sort()
-    .join(', ');
-
-  feedbackEl.innerHTML += `
-    <div style="border: 2px dashed orange; padding: 10px; margin-top: 10px; border-radius: 5px;">
-      🌐 <strong>Language Family:</strong> <br>
-      <b>${currentFamily}</b><br>
-      Family Members: ${members}
-    </div>
-  `;
-
-  // Start game button
-document.getElementById('start-btn').addEventListener('click', function() {
-  document.getElementById('start-screen').style.display = 'none';
-  applyMode('all'); // default mode
-});
-
-// Mode selection dropdown
-document.getElementById('mode-select').addEventListener('change', function() {
-  applyMode(this.value);
-});
-  
-});
