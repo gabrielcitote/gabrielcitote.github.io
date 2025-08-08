@@ -40,16 +40,6 @@ main {
 }
 
 
-#phrase-box {
-  display: inline-block;
-  background: #fff;
-  padding: 15px 25px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  min-width: 220px;
-}
-
 #question {
   font-size: 1.2rem;
 }
@@ -204,23 +194,29 @@ footer {
   transition: all 0.3s ease-in-out;
 }
 
-#controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
+/* Start screen controls (the dropdown on the first page) */
+#start-controls {
   margin: 6px auto 12px;
+  text-align: center;
 }
-#controls label {
-  color: #444;
-  font-size: 0.95rem;
+
+#start-controls label {
+  margin-right: 8px;
+  font-weight: 600;
 }
-#mode {
+
+#start-mode {
   padding: 6px 10px;
-  font-size: 0.95rem;
   border-radius: 6px;
   border: 1px solid #ccc;
+  font-size: 0.95rem;
   background: #fff;
 }
+
+.button-bar {
+  text-align: center;
+  margin-top: 10px;
+}
+
 
 
