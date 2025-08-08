@@ -9,9 +9,29 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css?v=2">
-
-
+  <style>
+    /* small spacing for the controls row so it doesn’t hug the prompt */
+    #controls {
+      margin: 6px auto 12px;
+      text-align: center;
+    }
+    #controls label {
+      margin-right: 8px;
+      font-weight: 600;
+    }
+    #mode {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+    }
+    .button-bar {
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
   <!-- Start screen -->
   <div id="start-screen">
@@ -27,48 +47,47 @@
     <h1 id="title">🧠 LingoGuessr</h1>
   </header>
 
-<main>
-  <div id="phrase-wrapper">
-    <p id="prompt">Where is this language spoken?</p>
-    <div id="controls">
-  <label for="mode">Mode:</label>
-  <select id="mode">
-    <option value="all" selected>All languages</option>
-    <option value="easy">Easy</option>
-    <option value="medium">Medium</option>
-    <option value="hard">Hard</option>
-    <option value="europe">Europe</option>
-    <option value="asia">Asia</option>
-    <option value="geoguessr">GeoGuessr countries</option>
-  </select>
-</div>
-    <div id="phrase-box">
-      <div id="question">[Example phrase will appear here]</div>
+  <main>
+    <div id="phrase-wrapper">
+      <p id="prompt">Where is this language spoken?</p>
+
+      <!-- ✅ fixed controls block -->
+      <div id="controls">
+        <label for="mode">Mode:</label>
+        <select id="mode">
+          <option value="all" selected>All languages</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+          <option value="europe">Europe</option>
+          <option value="asia">Asia</option>
+          <option value="geoguessr">GeoGuessr countries</option>
+        </select>
+      </div>
+
+      <div id="phrase-box">
+        <div id="question">[Example phrase will appear here]</div>
+      </div>
     </div>
-  </div>
 
-  <div id="map"></div>
-  <p id="feedback"></p>
+    <div id="map"></div>
+    <p id="feedback"></p>
 
-<div class="button-bar">
-  <button id="show-family" hidden>Show Language Family</button>
-  <button id="next" hidden>Next phrase</button>
-  <button id="show-answer">Show Answer</button>
-  <button id="skip">Skip</button>
-</div>
-</main>
-
+    <div class="button-bar">
+      <button id="show-family" hidden>Show Language Family</button>
+      <button id="next" hidden>Next phrase</button>
+      <button id="show-answer">Show Answer</button>
+      <button id="skip">Skip</button>
+    </div>
+  </main>
 
   <footer>
     <p id="credit">✨ Created by Chung-I</p>
   </footer>
 
-    <!-- Leaflet + JS -->
+  <!-- Leaflet + JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
   <!-- Main game logic -->
   <script src="game.js"></script>
 </body>
-
 </html>
-
