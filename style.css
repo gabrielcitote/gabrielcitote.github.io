@@ -423,7 +423,7 @@ html, body { height: 100%; }  /* makes centering reliable */
   animation-delay: 4s;
 }
 .bg-blobs > span:nth-child(3) {
-  background: var(--teal);
+  background: #ff5c5c;
   top: 10%; right: 30%;
   opacity: .28;                 /* even softer for the accent */
   width: 60vmax; height: 60vmax;
