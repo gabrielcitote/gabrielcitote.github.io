@@ -82,6 +82,7 @@ html, body { height: 100%; }  /* makes centering reliable */
 
 #start-content {
   width: min(720px, 92vw);
+  z-index: 2;
   background: #fff;
   padding: 32px 28px;
   border-radius: 14px;
@@ -373,6 +374,7 @@ html, body { height: 100%; }  /* makes centering reliable */
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 0;
   background:
     radial-gradient(80% 70% at 50% 40%,
       rgba(0,0,0,0) 60%,
@@ -406,6 +408,7 @@ html, body { height: 100%; }  /* makes centering reliable */
   mix-blend-mode: multiply;
   animation: blobDrift 12s ease-in-out infinite;
   will-change: transform;
+  z-index: -1;
 }
 
 /* just three blobs */
