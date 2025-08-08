@@ -12,34 +12,37 @@
 </head>
 
 <body>
-  <!-- Start screen -->
-  <div id="start-screen">
-<div id="start-content">
-<header class="start-header">
-  <h1>
-    <span class="brand">LingoGuessr</span>
-  </h1>
-</header>
-  <p>What langauge is it?</p>
+ <!-- Start screen -->
+<div id="start-screen">
+  <div id="start-content">
+    <header class="start-header">
+      <h1>
+        <span class="brand">LingoGuessr</span>
+      </h1>
+    </header>
 
-  <!-- Mode selector (start screen only) -->
-  <div id="start-controls">
-    <label for="start-mode">Mode:</label>
-    <select id="start-mode">
-      <option value="all" selected>All languages</option>
-      <option value="easy">Easy</option>
-      <option value="medium">Medium</option>
-      <option value="hard">Hard</option>
-      <option value="europe">Europe</option>
-      <option value="asia">Asia</option>
-      <option value="geoguessr">GeoGuessr countries</option>
-    </select>
+    <p><i>What language is it?<i></p>
+
+    <!-- Mode selector (start screen only) -->
+    <div id="start-controls">
+      <label for="start-mode">Mode:</label>
+      <select id="start-mode">
+        <option value="all" selected>All languages</option>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+        <option value="europe">Europe</option>
+        <option value="asia">Asia</option>
+        <option value="geoguessr">GeoGuessr countries</option>
+      </select>
+    </div>
+
+    <button id="start-btn">Start Game</button>
+
+    <!-- start-screen credit (INSIDE the card, unique id) -->
+    <p id="start-credit">✨ Created by Chung-I</p>
   </div>
-
-  <button id="start-btn">Start Game</button>
 </div>
-
-  </div>
 
   <!-- Actual game UI (hidden at first) -->
 <header class="game-header">
