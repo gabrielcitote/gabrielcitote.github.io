@@ -607,3 +607,31 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Make the brand clickable during the game to return to the start screen
+document.addEventListener('DOMContentLoaded', () => {
+  const homeLink = document.getElementById('home-link');
+  if (homeLink) {
+    homeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // Hide the in-game UI
+      const gameHeader = document.querySelector('header.game-header');
+      if (gameHeader) gameHeader.style.display = 'none';
+      document.querySelector('main').style.display = 'none';
+      document.querySelector('footer').style.display = 'none';
+
+      // Show the start screen
+      const startScreen = document.getElementById('start-screen');
+      startScreen.style.display = 'grid'; // matches your start-screen CSS
+
+      // (Optional) reset some visuals so returning feels clean
+      if (typeof feedbackEl !== 'undefined') feedbackEl.textContent = '';
+      if (typeof countriesLayer !== 'undefined' && countriesLayer) {
+        countriesLayer.eachLayer(l => l.setStyle({
+          fillColor: '#ccc', fillOpacity: 0.7, color: '#444'
+        }));
+      }
+    });
+  }
+});
+
