@@ -6,8 +6,6 @@ let countryLangMap = {}; // ALPHA-3 ISO → Languages
 let familyShown = false;
 let workingPhrases = [];                  // phrases after filtering
 
-const modeSelect = document.getElementById('mode');
-
 const iso2to3 = {
   "AF": "AFG", "AX": "ALA", "AL": "ALB", "DZ": "DZA", "AS": "ASM", "AD": "AND",
   "AO": "AGO", "AI": "AIA", "AQ": "ATA", "AG": "ATG", "AR": "ARG", "AM": "ARM",
@@ -327,7 +325,7 @@ function langDifficulty(lang) {
 }
 
 
-function startGame(phraseData, geoData, langData) {
+function startGame(phraseData, geoData, langData, initialMode = 'all') {
   phrases = phraseData;
   countryLangMap = langData;
 
@@ -342,10 +340,9 @@ function startGame(phraseData, geoData, langData) {
   });
 
   initMap(geoData);
-  applyMode('all'); // will call nextPhrase()
+  applyMode(initialMode); // ← use the selection from the start screen
 
-  // Hook up button events
-  modeSelect.addEventListener('change', (e) => applyMode(e.target.value));
+  // Hook up in-game buttons
   nextBtn.onclick = nextPhrase;
   showAnswerBtn.onclick = showAnswer;
   skipBtn.onclick = nextPhrase;
@@ -353,6 +350,7 @@ function startGame(phraseData, geoData, langData) {
   // Fix map sizing after load
   setTimeout(() => map.invalidateSize(), 100);
 }
+
 
 
 function initMap(geoData) {
@@ -533,6 +531,49 @@ function showAnswer() {
   document.getElementById('skip').hidden = true;
 }
 
+document.getElementById('show-family').addEventListener('click', () => {
+  if (familyShown || !current) return;  // prevent duplicates / early clicks
+  familyShown = true;
+
+  const currentLang = current.lang;
+  const currentFamily = languageFamilyMap[currentLang];
+
+  if (!currentFamily) {
+    feedbackEl.innerHTML += `
+      <div style="border: 2px solid orange; padding: 10px; margin-top: 10px; border-radius: 5px;">
+        ⚠️ No family info for <b>${currentLang}</b>.
+      </div>
+    `;
+    return;
+  }
+
+  // Find all countries that speak any language in the same family
+  const matchingISOs = Object.entries(countryLangMap)
+    .filter(([iso, langs]) => (langs || []).some(lang => languageFamilyMap[lang] === currentFamily))
+    .map(([iso]) => iso);
+
+  countriesLayer.eachLayer(layer => {
+    const iso = iso2to3[layer.feature.id] || layer.feature.id;
+    if (matchingISOs.includes(iso)) {
+      layer.setStyle({ fillColor: 'gold' });
+    }
+  });
+
+  const members = Object.entries(languageFamilyMap)
+    .filter(([_, fam]) => fam === currentFamily)
+    .map(([lang]) => lang)
+    .sort()
+    .join(', ');
+
+  feedbackEl.innerHTML += `
+    <div style="border: 2px dashed orange; padding: 10px; margin-top: 10px; border-radius: 5px;">
+      🌐 <strong>Language Family:</strong><br>
+      <b>${currentFamily}</b><br>
+      Family Members: ${members}
+    </div>
+  `;
+});
+
 // --- Boot + Start button binding (put this at the VERY bottom of game.js) ---
 document.addEventListener('DOMContentLoaded', () => {
   // Hide the main UI until the user starts the game
@@ -555,7 +596,9 @@ document.addEventListener('DOMContentLoaded', () => {
       fetch('data/countries-languages.json').then(r => r.json())
     ])
     .then(([phraseData, geoData, langData]) => {
-      startGame(phraseData, geoData, langData);
+      const initialModeEl = document.getElementById('start-mode'); // dropdown on start screen
+      const initialMode = initialModeEl ? initialModeEl.value : 'all';
+      startGame(phraseData, geoData, langData, initialMode);
     })
     .catch(err => {
       console.error('Failed to load game data:', err);
