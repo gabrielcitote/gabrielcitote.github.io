@@ -261,4 +261,20 @@ footer {
   font-family: 'Bungee', cursive; /* overrides only the word */
 }
 
+/* clickable brand in the game header */
+#home-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+#home-link:hover .brand {
+  text-decoration: underline;
+}
+
+/* optional: same spacing for both headers */
+.start-header h1,
+.game-header h1 {
+  margin: 0 0 10px;
+}
+
 
