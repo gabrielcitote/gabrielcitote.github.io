@@ -94,20 +94,6 @@ footer {
 }
 
 /* mode row */
-#start-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 6px auto 22px;
-}
-
-#start-controls label {
-  font-family: 'Noto Sans', sans-serif;   /* standard font for "Mode:" */
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1f1f1f;
-}
 
 #start-mode {
   font-family: 'Noto Sans', sans-serif;
@@ -123,8 +109,8 @@ footer {
 /* start button */
 #start-btn {
   font-family: 'Noto Sans', sans-serif;
-  padding: 14px 26px;
-  font-size: 1.1rem;
+  padding: 12px 22px;                /* height similar to the control */
+  font-size: 1.05rem;
   border-radius: 12px;
   border: 0;
   color: #fff;
@@ -132,17 +118,16 @@ footer {
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(30,136,255,0.35);
   transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-  margin-top: 16px;
-  margin-left: 12px;
+  margin: 0 0 0 12px;                /* ONLY left margin; remove top margin */
+  vertical-align: middle;            /* lines up with the control nicely */
 }
 #start-btn:hover {
   transform: translateY(-1px);
   background: #1676e6;
   box-shadow: 0 10px 22px rgba(30,136,255,0.40);
 }
-#start-btn:active {
-  transform: translateY(0);
-}
+#start-btn:active { transform: translateY(0); }
+
 
 #show-answer {
   background-color: #4CAF50;   /* green */
@@ -232,23 +217,35 @@ footer {
 }
 
 /* Start screen controls (the dropdown on the first page) */
+/* —— START SCREEN: make label + select feel like one control —— */
 #start-controls {
-  display: inline-flex;              /* sit nicely as one unit */
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;                /* inner padding so the border doesn't hug */
-  margin: 6px auto 28px;             /* extra bottom space before the button */
-  background: #ffffff;               
+  gap: 0;                           /* no visual gap inside the unit */
+  margin: 10px auto 20px;
   border: 1px solid #e6e6e6;
-  border-radius: 14px;               /* pill-like */
+  border-radius: 12px;
+  overflow: hidden;                  /* rounds the inner edges */
+  background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
+
 #start-controls label {
-  font-family: 'Noto Sans', sans-serif;
-  font-size: 1rem;
+  padding: 10px 12px;
+  background: #f7f7f7;
+  border-right: 1px solid #e6e6e6;
   font-weight: 600;
-  color: #1f1f1f;
-  margin: 0 4px 0 2px;              /* tiny nudge for balance */
+  margin: 0;                         /* remove stray margins */
+}
+
+/* keep your existing #start-mode block but ensure these:  */
+#start-mode {
+  padding: 10px 12px;                /* matches label height */
+  border: 0;
+  background: transparent;
+  outline: none;
+  appearance: none;
+  font-size: 1rem;
 }
 
 
@@ -260,10 +257,10 @@ footer {
 
 /* Ensure the rest of the H1 doesn’t override it */
 #start-content h1 {
-  font-size: 2.8rem;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
   margin: 0 0 10px;
   letter-spacing: 0.5px;
-  font-family: 'Noto Sans', sans-serif; /* default for emoji */
+  font-family: 'Noto Sans', sans-serif;
 }
 
 #start-content h1 .brand {
