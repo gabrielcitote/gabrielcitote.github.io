@@ -406,7 +406,7 @@ html, body { height: 100%; }  /* makes centering reliable */
   filter: blur(90px);         /* bigger blur = calmer */
   opacity: .35;               /* keep it gentle */
   mix-blend-mode: multiply;
-  animation: blobDrift 12s ease-in-out infinite;
+  animation: blobDrift 8s ease-in-out infinite;
   will-change: transform;
   z-index: -1;
 }
