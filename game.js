@@ -49,7 +49,9 @@ const iso2to3 = {
   "VN": "VNM", "VG": "VGB", "VI": "VIR", "WF": "WLF", "EH": "ESH", "YE": "YEM",
   "ZM": "ZMB", "ZW": "ZWE"
 };
+
 const languageFamilyMap = {
+  // Germanic
   "English": "Germanic",
   "German": "Germanic",
   "Dutch": "Germanic",
@@ -60,7 +62,10 @@ const languageFamilyMap = {
   "Icelandic": "Germanic",
   "Frisian": "Germanic",
   "Luxembourgish": "Germanic",
+  "Scots": "Germanic",
+  "Low German": "Germanic",
 
+  // Romance
   "French": "Romance",
   "Spanish": "Romance",
   "Portuguese": "Romance",
@@ -69,7 +74,11 @@ const languageFamilyMap = {
   "Catalan": "Romance",
   "Galician": "Romance",
   "Occitan": "Romance",
+  "Walloon": "Romance",
+  "Sardinian": "Romance",
+  "Ladino": "Romance",
 
+  // Slavic
   "Russian": "Slavic",
   "Polish": "Slavic",
   "Ukrainian": "Slavic",
@@ -83,19 +92,28 @@ const languageFamilyMap = {
   "Macedonian": "Slavic",
   "Bulgarian": "Slavic",
   "Montenegrin": "Slavic",
+  "Rusyn": "Slavic",
 
+  // Uralic
   "Finnish": "Uralic",
   "Estonian": "Uralic",
   "Hungarian": "Uralic",
 
+  // Sino-Tibetan
+  "Chinese": "Sino-Tibetan",
+  "Simplified Chinese": "Sino-Tibetan",
+  "Traditional Chinese": "Sino-Tibetan",
   "Mandarin": "Sino-Tibetan",
   "Cantonese": "Sino-Tibetan",
   "Wu": "Sino-Tibetan",
   "Hakka": "Sino-Tibetan",
   "Min Nan": "Sino-Tibetan",
+  "Gan": "Sino-Tibetan",
+  "Xiang": "Sino-Tibetan",
   "Tibetan": "Sino-Tibetan",
   "Burmese": "Sino-Tibetan",
 
+  // Indo-Aryan
   "Hindi": "Indo-Aryan",
   "Urdu": "Indo-Aryan",
   "Bengali": "Indo-Aryan",
@@ -105,12 +123,17 @@ const languageFamilyMap = {
   "Sindhi": "Indo-Aryan",
   "Sinhala": "Indo-Aryan",
   "Nepali": "Indo-Aryan",
+  "Assamese": "Indo-Aryan",
+  "Odia": "Indo-Aryan",
+  "Maithili": "Indo-Aryan",
 
+  // Dravidian
   "Tamil": "Dravidian",
   "Telugu": "Dravidian",
   "Kannada": "Dravidian",
   "Malayalam": "Dravidian",
 
+  // Turkic
   "Turkish": "Turkic",
   "Kazakh": "Turkic",
   "Uzbek": "Turkic",
@@ -119,26 +142,37 @@ const languageFamilyMap = {
   "Azerbaijani": "Turkic",
   "Uyghur": "Turkic",
   "Turkmen": "Turkic",
+  "Bashkir": "Turkic",
+  "Chuvash": "Turkic",
 
+  // Semitic
   "Arabic": "Semitic",
   "Hebrew": "Semitic",
   "Amharic": "Semitic",
   "Tigrinya": "Semitic",
   "Maltese": "Semitic",
 
+  // Japonic & Koreanic
   "Japanese": "Japonic",
   "Korean": "Koreanic",
 
+  // Austroasiatic
   "Vietnamese": "Austroasiatic",
   "Khmer": "Austroasiatic",
 
+  // Austronesian
   "Tagalog": "Austronesian",
   "Malagasy": "Austronesian",
   "Malay": "Austronesian",
   "Indonesian": "Austronesian",
   "Javanese": "Austronesian",
   "Cebuano": "Austronesian",
+  "Samoan": "Austronesian",
+  "Maori": "Austronesian",
+  "Hawaiian": "Austronesian",
+  "Fijian": "Austronesian",
 
+  // Niger-Congo
   "Swahili": "Niger-Congo",
   "Yoruba": "Niger-Congo",
   "Igbo": "Niger-Congo",
@@ -148,12 +182,19 @@ const languageFamilyMap = {
   "Lingala": "Niger-Congo",
   "Kinyarwanda": "Niger-Congo",
   "Kirundi": "Niger-Congo",
+  "Wolof": "Niger-Congo",
+  "Bambara": "Niger-Congo",
 
+  // Afroasiatic (non-Semitic)
   "Somali": "Afroasiatic",
   "Hausa": "Afroasiatic",
   "Berber": "Afroasiatic",
 
+  // Other small families & isolates
   "Basque": "Language Isolate",
+  "Georgian": "Kartvelian",
+  "Armenian": "Indo-European (Armenian branch)",
+  "Mongolian": "Mongolic",
   "Esperanto": "Constructed"
 }
 
