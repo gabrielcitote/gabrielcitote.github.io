@@ -576,8 +576,10 @@ document.getElementById('show-family').addEventListener('click', () => {
 
 // --- Boot + Start button binding (put this at the VERY bottom of game.js) ---
 document.addEventListener('DOMContentLoaded', () => {
-  // Hide the main UI until the user starts the game
   const gameHeader = document.querySelector('header.game-header');
+  const homeLink = document.getElementById('home-link');
+
+  // Hide the main UI until the user starts the game
   if (gameHeader) gameHeader.style.display = 'none';
   document.querySelector('main').style.display = 'none';
   document.querySelector('footer').style.display = 'none';
@@ -585,20 +587,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Start button -> show game + load data
   const startBtn = document.getElementById('start-btn');
   startBtn.addEventListener('click', () => {
-    // Show the in-game UI
     document.getElementById('start-screen').style.display = 'none';
     if (gameHeader) gameHeader.style.display = 'block';
     document.querySelector('main').style.display = 'block';
     document.querySelector('footer').style.display = 'block';
 
-    // Load data, then start the game
     Promise.all([
       fetch('data/phrases.json').then(r => r.json()),
       fetch('data/countries.geo.json').then(r => r.json()),
       fetch('data/countries-languages.json').then(r => r.json())
     ])
     .then(([phraseData, geoData, langData]) => {
-      const initialModeEl = document.getElementById('start-mode'); // dropdown on start screen
+      const initialModeEl = document.getElementById('start-mode');
       const initialMode = initialModeEl ? initialModeEl.value : 'all';
       startGame(phraseData, geoData, langData, initialMode);
     })
@@ -608,58 +608,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Make the brand clickable during the game to return to the start screen
-  const homeLink = document.getElementById('home-link');
+  // Logo click -> return to start screen
   if (homeLink) {
     homeLink.addEventListener('click', (e) => {
       e.preventDefault();
 
-      // Hide the in-game UI
       if (gameHeader) gameHeader.style.display = 'none';
       document.querySelector('main').style.display = 'none';
       document.querySelector('footer').style.display = 'none';
 
-      // Show the start screen (grid matches your CSS)
       const startScreen = document.getElementById('start-screen');
-      if (startScreen) startScreen.style.display = 'grid';
+      if (startScreen) startScreen.style.display = 'flex';
 
-      // Optional: quick visual reset
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
       if (typeof feedbackEl !== 'undefined') feedbackEl.textContent = '';
       if (typeof countriesLayer !== 'undefined' && countriesLayer) {
         countriesLayer.eachLayer(l => l.setStyle({
-          fillColor: '#ccc', fillOpacity: 0.7, color: '#444'
+          fillColor: '#ccc',
+          fillOpacity: 0.7,
+          color: '#444'
         }));
       }
     });
   }
 });
 
-
-// Make the brand clickable during the game to return to the start screen
-document.addEventListener('DOMContentLoaded', () => {
-  const homeLink = document.getElementById('home-link');
-  if (homeLink) {
-    homeLink.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      // Hide the in-game UI
-      const gameHeader = document.querySelector('header.game-header');
-      if (gameHeader) gameHeader.style.display = 'none';
-      document.querySelector('main').style.display = 'none';
-      document.querySelector('footer').style.display = 'none';
-
-      // Show the start screen
-      const startScreen = document.getElementById('start-screen');
-      startScreen.style.display = 'grid'; // matches your start-screen CSS
-
-      // (Optional) reset some visuals so returning feels clean
-      if (typeof feedbackEl !== 'undefined') feedbackEl.textContent = '';
-      if (typeof countriesLayer !== 'undefined' && countriesLayer) {
-        countriesLayer.eachLayer(l => l.setStyle({
-          fillColor: '#ccc', fillOpacity: 0.7, color: '#444'
-        }));
-      }
-    });
-  }
-});
 
