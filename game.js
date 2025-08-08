@@ -4,6 +4,9 @@ let phrases = [];
 let current = null;
 let countryLangMap = {}; // ALPHA-3 ISO → Languages
 let familyShown = false;
+let workingPhrases = [];                  // phrases after filtering
+
+const modeSelect = document.getElementById('mode');
 
 const iso2to3 = {
   "AF": "AFG", "AX": "ALA", "AL": "ALB", "DZ": "DZA", "AS": "ASM", "AD": "AND",
@@ -204,11 +207,134 @@ const nextBtn    = document.getElementById('next');
 const showAnswerBtn = document.getElementById('show-answer');  
 const skipBtn = document.getElementById('skip');              
 
+// --- Regions (ISO-3) ---
+const Regions = {
+  Europe: new Set([
+    "ALB","AND","AUT","BEL","BIH","BGR","HRV","CYP","CZE","DNK","EST","FIN","FRA",
+    "DEU","GRC","HUN","ISL","IRL","ITA","LVA","LIE","LTU","LUX","MLT","MDA","MCO",
+    "MNE","NLD","MKD","NOR","POL","PRT","ROU","SMR","SRB","SVK","SVN","ESP","SWE",
+    "CHE","UKR","GBR","VAT","KOS" // include Kosovo if your GeoJSON has it
+  ]),
+  Asia: new Set([
+    "AFG","ARM","AZE","BHR","BGD","BTN","BRN","KHM","CHN","CYP","GEO","HKG","IND",
+    "IDN","IRN","IRQ","ISR","JPN","JOR","KAZ","KWT","KGZ","LAO","LBN","MAC","MYS",
+    "MDV","MNG","MMR","NPL","PRK","OMN","PAK","PSE","PHL","QAT","SAU","SGP","KOR",
+    "LKA","SYR","TWN","TJK","THA","TUR","TKM","ARE","UZB","VNM","YEM"
+  ])
+};
+
+Object.assign(languageFamilyMap, {
+  // Indo-Iranian (Indo-European)
+  "Persian": "Indo-Iranian", "Farsi": "Indo-Iranian", "Dari": "Indo-Iranian", "Tajik": "Indo-Iranian",
+  "Pashto": "Indo-Iranian", "Kurdish": "Indo-Iranian",
+
+  // Tai–Kadai
+  "Thai": "Tai-Kadai", "Lao": "Tai-Kadai",
+
+  // Celtic
+  "Welsh": "Celtic", "Irish": "Celtic", "Scottish Gaelic": "Celtic",
+  "Breton": "Celtic", "Cornish": "Celtic", "Manx": "Celtic",
+
+  // Eskimo–Aleut
+  "Greenlandic": "Eskimo–Aleut", "Kalaallisut": "Eskimo–Aleut",
+
+  // Austronesian (ensure both forms)
+  "Filipino": "Austronesian", "Tagalog": "Austronesian",
+  "Marshallese": "Austronesian", "Tongan": "Austronesian",
+
+  // Bantu / Niger-Congo (fill the ones used in Hard)
+  "Sesotho": "Niger-Congo", "Tswana": "Niger-Congo", "Venda": "Niger-Congo",
+  "Tsonga": "Niger-Congo", "Herero": "Niger-Congo",
+  "Akan": "Niger-Congo", "Twi": "Niger-Congo", // alias help
+  "Chewa": "Niger-Congo", "Chichewa": "Niger-Congo", // treat as same
+  "Sango": "Niger-Congo", // (Ubangi; good enough bucket)
+
+  // Cushitic / Semitic (Afroasiatic)
+  "Oromo": "Afroasiatic (Cushitic)",
+  "Tigrinya": "Semitic",
+
+  // Sino-Tibetan additions
+  "Dzongkha": "Sino-Tibetan",
+
+  // Mainland SE Asia you already have: Khmer (Austroasiatic), Burmese (Sino-Tibetan).
+
+  // Caucasus / others already covered: Georgian (Kartvelian), Armenian present.
+
+  // Indigenous Americas used in Hard
+  "Quechua": "Quechuan",
+  "Aymara": "Aymaran",
+  "Guarani": "Tupian",
+  "Nahuatl": "Uto-Aztecan",
+  "Mapudungun": "Araucanian",
+
+  // Creoles
+  "Haitian Creole": "Creole (French-based)"
+});
+
+
+// --- GeoGuessr country set (fill this with the ISO-3 list you want) ---
+const GeoGuessrISO3 = new Set([
+  // Example starter set — replace/expand with your actual GG roster:
+  "USA","CAN","MEX","BRA","ARG","CHL","COL","PER","ECU","URY","PRY","BOL",
+  "GBR","IRL","FRA","DEU","ESP","PRT","ITA","CHE","AUT","NLD","BEL","LUX",
+  "NOR","SWE","FIN","DNK","ISL","POL","CZE","SVK","HUN","ROU","BGR","GRC",
+  "TUR","RUS","UKR","EST","LVA","LTU","SRB","HRV","SVN","BIH","MNE","MKD","ALB",
+  "MAR","TUN","DZA","EGY","ZAF","NAM","BWA","ZMB","ZWE","MOZ","KEN","UGA",
+  "NGA","GHA","CIV","SEN",
+  "SAU","ARE","OMN","QAT","JOR","LBN","ISR",
+  "IND","PAK","NPL","BGD","LKA",
+  "CHN","TWN","JPN","KOR","HKG","MAC",
+  "THA","VNM","KHM","LAO","MMR","MYS","SGP","IDN","PHL",
+  "AUS","NZL"
+]);
+
+// After phrases are loaded OR at the top of game.js
+
+// Difficulty by language
+const EasyLanguages = new Set([
+  "English", "Spanish", "French", "German", "Mandarin", "Arabic", "Portuguese"
+]);
+
+const MediumLanguages = new Set([
+  ...EasyLanguages,
+  "Italian", "Russian", "Japanese", "Korean", "Hindi", "Bengali",
+  "Turkish", "Dutch", "Persian", "Swedish", "Norwegian", "Danish",
+  "Polish", "Ukrainian", "Romanian", "Thai", "Vietnamese", "Greek",
+  "Czech", "Finnish", "Malay", "Swahili", "Hebrew", "Urdu",
+  "Catalan", "Serbian", "Croatian", "Slovak", "Bulgarian",
+  "Indonesian", "Filipino", "Tamil", "Telugu", "Kannada",
+  "Malayalam", "Punjabi"
+]);
+
+const HardLanguages = new Set([
+  ...MediumLanguages,
+  "Basque", "Icelandic", "Hungarian", "Georgian", "Amharic", "Maltese",
+  "Mongolian", "Uzbek", "Khmer", "Burmese", "Tibetan", "Zulu",
+  "Dzongkha", "Twi", "Fijian", "Samoan", "Tongan", "Marshallese",
+  "Greenlandic", "Lao", "Kinyarwanda", "Sesotho", "Shona", "Xhosa",
+  "Chewa", "Pashto", "Sindhi", "Wolof", "Kirundi", "Sango",
+  "Chichewa", "Luxembourgish", "Breton", "Cornish", "Frisian",
+  "Galician", "Occitan", "Romansh", "Aymara", "Guarani", "Quechua",
+  "Nahuatl", "Mapudungun", "Maori", "Haitian Creole", "Somali",
+  "Tswana", "Venda", "Tsonga", "Herero", "Oromo", "Tigrinya"
+]);
+
+function langDifficulty(lang) {
+  if (EasyLanguages.has(lang)) return "easy";
+  if (HardLanguages.has(lang)) return "hard";
+  if (MediumLanguages.has(lang)) return "medium";
+  return "medium"; // fallback
+}
+
+
 function startGame(phraseData, geoData, langData) {
   phrases = phraseData;
   countryLangMap = langData;
   initMap(geoData);
   nextPhrase();
+  // Set initial mode and hook changes
+  applyMode('all'); // ensures workingPhrases is set + map is prepared
+  modeSelect.addEventListener('change', (e) => applyMode(e.target.value));
   nextBtn.onclick = nextPhrase;
   showAnswerBtn.onclick = showAnswer;
   skipBtn.onclick = nextPhrase;
@@ -240,20 +366,76 @@ function initMap(geoData) {
   }).addTo(map);
 }
 
-function nextPhrase() {
+function applyMode(mode) {
+  let allowSet = null;
+
+  if (mode === 'easy' || mode === 'medium' || mode === 'hard') {
+    workingPhrases = phrases.filter(p => langDifficulty(p.lang) === mode);
+    allowSet = null; // no region limit if just difficulty
+  }
+  else if (mode === 'europe') allowSet = Regions.Europe;
+  else if (mode === 'asia') allowSet = Regions.Asia;
+  else if (mode === 'geoguessr') allowSet = GeoGuessrISO3;
+  else {
+    workingPhrases = phrases.slice(); // all
+  }
+
+  // If it's a region mode
+  if (allowSet) {
+    workingPhrases = phrases.filter(p => p.iso.some(iso => allowSet.has(iso)));
+  }
+
+  // Style and bind clicks
   countriesLayer.eachLayer(layer => {
-    layer.setStyle({ fillColor: "#ccc", fillOpacity: 0.7 });
+    const iso = iso2to3[layer.feature.id] || layer.feature.id;
+    const allowed = !allowSet || allowSet.has(iso);
+    layer.setStyle({
+      fillOpacity: allowed ? 0.7 : 0.15,
+      color: allowed ? '#444' : '#bbb'
+    });
+    layer.off('click');
+    if (allowed) {
+      layer.on('click', () => handleGuess(layer.feature, layer));
+    }
   });
 
-  current = phrases[Math.floor(Math.random() * phrases.length)];
+  nextPhrase();
+}
+
+function nextPhrase() {
+  // If applyMode hasn’t run yet, fall back to all phrases
+  if (!workingPhrases.length) workingPhrases = phrases.slice();
+
+  // Reset map styles to neutral (but maintain dimming from applyMode)
+  countriesLayer.eachLayer(layer => {
+    const cur = layer.options.fillOpacity ?? 0.7;
+    const isDimmed = cur < 0.7;
+    layer.setStyle({ fillColor: "#ccc", fillOpacity: isDimmed ? 0.15 : 0.7 });
+  });
+
+  // Pick random phrase
+  if (!workingPhrases.length) {
+    questionEl.textContent = "No phrases for this mode.";
+    feedbackEl.textContent = '';
+    nextBtn.hidden = true;
+    document.getElementById('show-family').hidden = true;
+    document.getElementById('show-answer').hidden = true;
+    document.getElementById('skip').hidden = true;
+    return;
+  }
+
+  current = workingPhrases[Math.floor(Math.random() * workingPhrases.length)];
   questionEl.textContent = current.text;
   feedbackEl.textContent = '';
+
+  // Buttons: before guess
   nextBtn.hidden = true;
-  familyShown = false;  // Reset here
   document.getElementById('show-family').hidden = true;
   document.getElementById('show-answer').hidden = false;
   document.getElementById('skip').hidden = false;
+  familyShown = false;
 }
+
 
 
 function handleGuess(feature, layer) {
@@ -403,4 +585,16 @@ document.getElementById('show-family').addEventListener('click', () => {
       Family Members: ${members}
     </div>
   `;
+
+  // Start game button
+document.getElementById('start-btn').addEventListener('click', function() {
+  document.getElementById('start-screen').style.display = 'none';
+  applyMode('all'); // default mode
+});
+
+// Mode selection dropdown
+document.getElementById('mode-select').addEventListener('change', function() {
+  applyMode(this.value);
+});
+  
 });
