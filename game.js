@@ -351,9 +351,41 @@ function startGame(phraseData, geoData, langData, initialMode = 'all') {
   setTimeout(() => map.invalidateSize(), 100);
 }
 
+function destroyMap() {
+  if (map) {
+    map.off();
+    map.remove();
+    map = null;
+  }
+  countriesLayer = null;
+
+  const mapEl = document.getElementById('map');
+  if (mapEl) mapEl.innerHTML = '';
+}
+
+function bootGame(initialMode) {
+  return Promise.all([
+    fetch('data/phrases.json').then(r => r.json()),
+    fetch('data/countries.geo.json').then(r => r.json()),
+    fetch('data/countries-languages.json').then(r => r.json())
+  ])
+  .then(([phraseData, geoData, langData]) => {
+    try {
+      startGame(phraseData, geoData, langData, initialMode);
+    } catch (err) {
+      console.error('Game init failed:', err);
+      alert('Failed to initialize the game. Open the console for details.');
+    }
+  })
+  .catch(err => {
+    console.error('Failed to load game data:', err);
+    alert('Failed to load game data. Open the console for details.');
+  });
+}
 
 
 function initMap(geoData) {
+  destroyMap(); // important when restarting
   map = L.map('map').setView([20, 0], 2);
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
