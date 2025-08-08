@@ -330,22 +330,27 @@ function langDifficulty(lang) {
 function startGame(phraseData, geoData, langData) {
   phrases = phraseData;
   countryLangMap = langData;
-  // Debug: check for missing languages in difficulty sets or family map
+
+  // Debug: check for missing languages
   phrases.forEach(p => {
-  if (!EasyLanguages.has(p.lang) && !MediumLanguages.has(p.lang) && !HardLanguages.has(p.lang)) {
-    console.warn(`Language missing from difficulty sets: ${p.lang}`);
-  }
-  if (!languageFamilyMap[p.lang]) {
-    console.warn(`Language missing from family map: ${p.lang}`);
-  }
-});
+    if (!EasyLanguages.has(p.lang) && !HardLanguages.has(p.lang) && langDifficulty(p.lang) === "medium") {
+      console.warn(`Language missing from explicit difficulty sets: ${p.lang}`);
+    }
+    if (!languageFamilyMap[p.lang]) {
+      console.warn(`Language missing from family map: ${p.lang}`);
+    }
+  });
+
   initMap(geoData);
-  applyMode('all');
+  applyMode('all'); // will call nextPhrase()
+
+  // Hook up button events
   modeSelect.addEventListener('change', (e) => applyMode(e.target.value));
   nextBtn.onclick = nextPhrase;
   showAnswerBtn.onclick = showAnswer;
   skipBtn.onclick = nextPhrase;
 
+  // Fix map sizing after load
   setTimeout(() => map.invalidateSize(), 100);
 }
 
@@ -489,7 +494,6 @@ function handleGuess(feature, layer) {
 
   document.getElementById('show-family').hidden = false;
   nextBtn.hidden = false;
-
   document.getElementById('show-answer').hidden = true;
   document.getElementById('skip').hidden = true;
 }
