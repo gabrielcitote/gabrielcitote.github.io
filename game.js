@@ -532,3 +532,35 @@ function showAnswer() {
   document.getElementById('show-answer').hidden = true;
   document.getElementById('skip').hidden = true;
 }
+
+// --- Boot + Start button binding (put this at the VERY bottom of game.js) ---
+document.addEventListener('DOMContentLoaded', () => {
+  // Hide the main UI until the user starts the game
+  document.querySelector('header').style.display = 'none';
+  document.querySelector('main').style.display = 'none';
+  document.querySelector('footer').style.display = 'none';
+
+  const startBtn = document.getElementById('start-btn');
+  startBtn.addEventListener('click', () => {
+    // Show the UI
+    document.getElementById('start-screen').style.display = 'none';
+    document.querySelector('header').style.display = 'block';
+    document.querySelector('main').style.display = 'block';
+    document.querySelector('footer').style.display = 'block';
+
+    // Load data, then start the game
+    Promise.all([
+      fetch('data/phrases.json').then(r => r.json()),
+      fetch('data/countries.geo.json').then(r => r.json()),
+      fetch('data/countries-languages.json').then(r => r.json())
+    ])
+    .then(([phraseData, geoData, langData]) => {
+      startGame(phraseData, geoData, langData);
+    })
+    .catch(err => {
+      console.error('Failed to load game data:', err);
+      alert('Failed to load game data. Open the console for details.');
+    });
+  });
+});
+
