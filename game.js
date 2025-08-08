@@ -526,7 +526,7 @@ function showAnswer() {
       <i>Language(s):</i> ${langText}
     </div>
   `;
-
+  
   document.getElementById('show-family').hidden = false;
   nextBtn.hidden = false;
   document.getElementById('show-answer').hidden = true;
