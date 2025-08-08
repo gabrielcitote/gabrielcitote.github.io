@@ -277,4 +277,10 @@ footer {
   margin: 0 0 10px;
 }
 
+/* Brand word uses Bungee anywhere */
+.brand { font-family: 'Bungee', cursive; }
+
+/* Make the clickable brand look like a heading, not a blue link */
+#home-link { color: inherit; text-decoration: none; }
+#home-link:hover .brand { text-decoration: underline; }
 
