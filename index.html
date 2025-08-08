@@ -35,11 +35,27 @@
 <body>
   <!-- Start screen -->
   <div id="start-screen">
-    <div id="start-content">
-      <h1>🧠 LingoGuessr</h1>
-      <p>Can you guess where this language is spoken?</p>
-      <button id="start-btn">Start Game</button>
-    </div>
+<div id="start-content">
+  <h1>🧠 LingoGuessr</h1>
+  <p>Can you guess where this language is spoken?</p>
+
+  <!-- Mode selector (start screen only) -->
+  <div id="start-controls">
+    <label for="start-mode">Mode:</label>
+    <select id="start-mode">
+      <option value="all" selected>All languages</option>
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+      <option value="europe">Europe</option>
+      <option value="asia">Asia</option>
+      <option value="geoguessr">GeoGuessr countries</option>
+    </select>
+  </div>
+
+  <button id="start-btn">Start Game</button>
+</div>
+
   </div>
 
   <!-- Actual game UI (hidden at first) -->
@@ -50,20 +66,6 @@
   <main>
     <div id="phrase-wrapper">
       <p id="prompt">Where is this language spoken?</p>
-
-      <!-- ✅ fixed controls block -->
-      <div id="controls">
-        <label for="mode">Mode:</label>
-        <select id="mode">
-          <option value="all" selected>All languages</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-          <option value="europe">Europe</option>
-          <option value="asia">Asia</option>
-          <option value="geoguessr">GeoGuessr countries</option>
-        </select>
-      </div>
 
       <div id="phrase-box">
         <div id="question">[Example phrase will appear here]</div>
