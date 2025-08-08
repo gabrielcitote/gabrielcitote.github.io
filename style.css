@@ -65,45 +65,40 @@ footer {
   color: #999;
   margin-top: 20px;
 }
-/* START SCREEN */
-#start-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: #fefaf6;
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
+/* Center box styling */
 #start-content {
-  text-align: center;
-  font-family: 'Bungee', cursive;
+  background: white;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-#start-content p {
-  font-family: 'Noto Sans', sans-serif;
-  margin: 10px 0 20px;
-  font-size: 1.1rem;
+/* Add subtle gradient background to whole start screen */
+#start-screen {
+  background: linear-gradient(135deg, #fefaf6, #f4f1ec);
 }
 
-#start-btn {
-  padding: 12px 24px;
+/* Larger title with a drop shadow */
+#start-content h1 {
+  font-size: 2.5rem;
+  text-shadow: 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/* Mode dropdown spacing & style */
+#start-mode {
+  padding: 10px 14px;
   font-size: 1rem;
-  background-color: #2196F3;
-  color: white;
-  border: none;
   border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Noto Sans', sans-serif;
+  border: 1px solid #ccc;
+  background: #fff;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
-#start-btn:hover {
-  background-color: #0b7dda;
+/* Start button bigger and rounded */
+#start-btn {
+  padding: 14px 28px;
+  font-size: 1.1rem;
+  border-radius: 10px;
 }
 
 
@@ -201,17 +196,12 @@ footer {
 }
 
 #start-controls label {
-  margin-right: 8px;
-  font-weight: 600;
+  font-family: 'Noto Sans', sans-serif; /* or Arial, Helvetica, sans-serif */
+  font-weight: bold;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
 }
 
-#start-mode {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 0.95rem;
-  background: #fff;
-}
 
 .button-bar {
   text-align: center;
