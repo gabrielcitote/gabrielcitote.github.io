@@ -284,3 +284,16 @@ footer {
 #home-link { color: inherit; text-decoration: none; }
 #home-link:hover .brand { text-decoration: underline; }
 
+.start-header {
+  text-align: center;
+}
+
+.start-header h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  letter-spacing: 0.5px;
+}
+
+.start-header .brand {
+  font-family: 'Bungee', cursive;
+}
