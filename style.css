@@ -309,8 +309,9 @@ html, body { height: 100%; }  /* makes centering reliable */
   display: inline-block;
   font-style: italic; /* makes it italic */
 }
-.brand.lingo  { color: #1a73e8; }
-.brand.guessr { color: #34a853; }
+
+.brand-lingo  { color: var(--blue); }
+.brand-guessr { color: var(--green); }
 
 
 
