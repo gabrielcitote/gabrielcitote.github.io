@@ -67,34 +67,38 @@ footer {
 }
 /* Center box styling */
 /* —— START SCREEN (replace your whole start-screen block with this) —— */
+/* Start overlay — card stays perfectly centered */
 #start-screen {
   position: fixed;
   inset: 0;
-  display: flex;                 /* was grid */
-  flex-direction: column;        /* stack center box + credit vertically */
-  align-items: center;
-  justify-content: center;
-  gap: 16px;                     /* space between the box and credit */
+  display: grid;
+  place-items: center;               /* centers the card only */
   background: linear-gradient(135deg, #fffaf3, #f5efe7);
   z-index: 9999;
 }
 
+/* Your white card */
 #start-content {
   width: min(720px, 92vw);
-  background: #ffffff;
+  background: #fff;
   padding: 32px 28px;
   border-radius: 14px;
   box-shadow: 0 10px 28px rgba(0,0,0,0.10);
   text-align: center;
 }
 
-
-#start-content p {
-  font-family: 'Noto Sans', sans-serif;
-  font-size: 1.15rem;
-  color: #333;
-  margin: 4px 0 22px;
+/* Credit sits at the bottom, doesn’t affect centering */
+#start-credit {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;                     /* adjust spacing from bottom */
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 0.95rem;
+  color: #7a7a7a;
+  font-style: italic;
 }
+
 
 /* mode row */
 
