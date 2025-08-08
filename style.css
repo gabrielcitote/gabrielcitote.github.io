@@ -69,9 +69,12 @@ footer {
 /* —— START SCREEN (replace your whole start-screen block with this) —— */
 #start-screen {
   position: fixed;
-  inset: 0;                    /* shorthand for top/right/bottom/left: 0 */
-  display: grid;
-  place-items: center;         /* perfect centering */
+  inset: 0;
+  display: flex;                 /* was grid */
+  flex-direction: column;        /* stack center box + credit vertically */
+  align-items: center;
+  justify-content: center;
+  gap: 16px;                     /* space between the box and credit */
   background: linear-gradient(135deg, #fffaf3, #f5efe7);
   z-index: 9999;
 }
@@ -218,34 +221,44 @@ footer {
 
 /* Start screen controls (the dropdown on the first page) */
 /* —— START SCREEN: make label + select feel like one control —— */
+/* Start screen controls (pill container) */
 #start-controls {
   display: inline-flex;
   align-items: center;
-  gap: 0;                           /* no visual gap inside the unit */
-  margin: 10px auto 20px;
+  gap: 12px;
+  padding: 10px 14px;
+  margin: 6px auto 28px;
+  background: #ffffff;
   border: 1px solid #e6e6e6;
-  border-radius: 12px;
-  overflow: hidden;                  /* rounds the inner edges */
-  background: #fff;
+  border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
+/* Label: normal (not italic), same height rhythm */
 #start-controls label {
-  padding: 10px 12px;
-  background: #f7f7f7;
-  border-right: 1px solid #e6e6e6;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1rem;
   font-weight: 600;
-  margin: 0;                         /* remove stray margins */
+  color: #1f1f1f;
+  font-style: normal;            /* force non-italic */
+  margin: 0 4px 0 2px;
+  line-height: 44px;             /* match select height */
 }
 
-/* keep your existing #start-mode block but ensure these:  */
+/* Select: non-italic, consistent height, comfy width */
 #start-mode {
-  padding: 10px 12px;                /* matches label height */
-  border: 0;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1rem;
+  font-style: normal;            /* force non-italic */
+  height: 44px;                  /* consistent control height */
+  line-height: 44px;
+  padding: 0 14px;               /* internal padding */
+  min-width: 220px;              /* looks balanced next to button */
+  border: 0;                     /* remove inner border so pill feels continuous */
   background: transparent;
   outline: none;
-  appearance: none;
-  font-size: 1rem;
+  box-shadow: none;
+  appearance: none;              /* cleaner look */
 }
 
 
@@ -309,5 +322,11 @@ footer {
 .start-header .brand {
   font-family: 'Bungee', cursive;
   text-shadow: 1px 1px 0 #00000010; /* subtle depth */
+}
+#start-credit {
+  font-size: 0.95rem;
+  color: #7a7a7a;
+  font-style: italic;
+  margin: 0;                     /* let #start-screen gap control spacing */
 }
 
