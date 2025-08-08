@@ -577,15 +577,17 @@ document.getElementById('show-family').addEventListener('click', () => {
 // --- Boot + Start button binding (put this at the VERY bottom of game.js) ---
 document.addEventListener('DOMContentLoaded', () => {
   // Hide the main UI until the user starts the game
-  document.querySelector('header').style.display = 'none';
+  const gameHeader = document.querySelector('header.game-header');
+  if (gameHeader) gameHeader.style.display = 'none';
   document.querySelector('main').style.display = 'none';
   document.querySelector('footer').style.display = 'none';
 
+  // Start button -> show game + load data
   const startBtn = document.getElementById('start-btn');
   startBtn.addEventListener('click', () => {
-    // Show the UI
+    // Show the in-game UI
     document.getElementById('start-screen').style.display = 'none';
-    document.querySelector('header').style.display = 'block';
+    if (gameHeader) gameHeader.style.display = 'block';
     document.querySelector('main').style.display = 'block';
     document.querySelector('footer').style.display = 'block';
 
@@ -605,7 +607,33 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Failed to load game data. Open the console for details.');
     });
   });
+
+  // Make the brand clickable during the game to return to the start screen
+  const homeLink = document.getElementById('home-link');
+  if (homeLink) {
+    homeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // Hide the in-game UI
+      if (gameHeader) gameHeader.style.display = 'none';
+      document.querySelector('main').style.display = 'none';
+      document.querySelector('footer').style.display = 'none';
+
+      // Show the start screen (grid matches your CSS)
+      const startScreen = document.getElementById('start-screen');
+      if (startScreen) startScreen.style.display = 'grid';
+
+      // Optional: quick visual reset
+      if (typeof feedbackEl !== 'undefined') feedbackEl.textContent = '';
+      if (typeof countriesLayer !== 'undefined' && countriesLayer) {
+        countriesLayer.eachLayer(l => l.setStyle({
+          fillColor: '#ccc', fillOpacity: 0.7, color: '#444'
+        }));
+      }
+    });
+  }
 });
+
 
 // Make the brand clickable during the game to return to the start screen
 document.addEventListener('DOMContentLoaded', () => {
