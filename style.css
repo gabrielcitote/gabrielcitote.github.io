@@ -347,3 +347,69 @@ html, body { height: 100%; }  /* makes centering reliable */
 .brand.guessr {
   color: #34a853; /* Google green / similar to GeoGuessr's green */
 }
+
+
+/* --- Animated blobs background (start screen only) --- */
+#start-screen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* keep your existing gradient if you want a base wash */
+  background: radial-gradient(1200px 600px at 50% -10%, #fff 0%, #fffaf3 40%, #f5efe7 100%);
+  z-index: 9999;
+}
+
+/* container for blobs */
+.bg-blobs {
+  position: absolute;
+  inset: -10%;                 /* bleed past edges so blur doesn’t clip */
+  overflow: hidden;
+  pointer-events: none;        /* clicks go to the card */
+  z-index: 0;                  /* behind the card */
+}
+
+/* the blobby layers */
+.bg-blobs > span {
+  position: absolute;
+  display: block;
+  width: 65vmax;
+  height: 65vmax;
+  filter: blur(50px);
+  opacity: 0.55;
+  border-radius: 40%;
+  animation: blobFloat 16s ease-in-out infinite;
+  mix-blend-mode: multiply;
+}
+
+/* GeoGuessr-ish palette */
+:root{
+  --geo-blue:   #1E88FF; /* bright map/ocean-ish blue */
+  --geo-green:  #2ECC71; /* globe green */
+  --geo-red:    #E74C3C; /* marker red */
+  --geo-cyan:   #13D6DA; /* accent cyan */
+  --geo-orange: #DA7313; /* warm orange */
+}
+
+/* positions + colors */
+.bg-blobs > span:nth-child(1){ background: var(--geo-red);   top:-20%; left:-25%;  animation-delay: 0s; }
+.bg-blobs > span:nth-child(2){ background: var(--geo-blue);  top:-10%; right:-20%; animation-delay: 3s; width:70vmax; height:70vmax; }
+.bg-blobs > span:nth-child(3){ background: var(--geo-green); bottom:-25%; left:-10%; animation-delay: 6s; width:60vmax; height:60vmax; }
+.bg-blobs > span:nth-child(4){ background: var(--geo-cyan);  bottom:-20%; right:-15%; animation-delay: 9s; width:68vmax; height:68vmax; }
+.bg-blobs > span:nth-child(5){ background: var(--geo-orange); top:10%; left:35%;  animation-delay: 12s; width:55vmax; height:55vmax; }
+
+/* gentle movement */
+@keyframes blobFloat{
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  33%  { transform: translate3d(6%, -3%, 0) scale(1.08); }
+  66%  { transform: translate3d(-4%, 5%, 0) scale(0.96); }
+  100% { transform: translate3d(0,0,0) scale(1); }
+}
+
+/* keep the card above the blobs */
+#start-content { position: relative; z-index: 1; }
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .bg-blobs > span { animation: none; }
+}
