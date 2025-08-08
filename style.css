@@ -204,5 +204,23 @@ footer {
   transition: all 0.3s ease-in-out;
 }
 
+#controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin: 6px auto 12px;
+}
+#controls label {
+  color: #444;
+  font-size: 0.95rem;
+}
+#mode {
+  padding: 6px 10px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
 
 
