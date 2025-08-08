@@ -5,6 +5,14 @@ body {
   padding: 0;
 }
 
+h1 {
+  margin-bottom: 0.3em; /* smaller gap below the title */
+}
+
+p {
+  margin-top: 0.2em; /* smaller gap above the paragraph */
+}
+
 header {
   text-align: left;
   padding: 20px 30px;
