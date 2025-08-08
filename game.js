@@ -618,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelector('footer').style.display = 'none';
 
       const startScreen = document.getElementById('start-screen');
-      if (startScreen) startScreen.style.display = 'flex';
+      if (startScreen) startScreen.style.display = 'grid';
 
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
 
