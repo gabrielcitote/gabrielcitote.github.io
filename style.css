@@ -111,13 +111,13 @@ footer {
 
 #start-mode {
   font-family: 'Noto Sans', sans-serif;
-  padding: 10px 14px;
   font-size: 1rem;
-  border-radius: 10px;
-  border: 1px solid #d7d7d7;
-  background: #fff;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.03), inset 0 2px 4px rgba(0,0,0,0.04);
+  padding: 8px 12px;
+  border: 0;                         /* remove inner border so it feels like one piece */
+  background: transparent;           /* match the container */
   outline: none;
+  box-shadow: none;                   /* remove the inset shadow */
+  appearance: none;                   /* cleaner look */
 }
 
 /* start button */
@@ -132,6 +132,7 @@ footer {
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(30,136,255,0.35);
   transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  margin-top: 16px;
 }
 #start-btn:hover {
   transform: translateY(-1px);
@@ -231,15 +232,22 @@ footer {
 
 /* Start screen controls (the dropdown on the first page) */
 #start-controls {
-  margin: 6px auto 12px;
-  text-align: center;
+  display: inline-flex;              /* sit nicely as one unit */
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;                /* inner padding so the border doesn't hug */
+  margin: 6px auto 28px;             /* extra bottom space before the button */
+  background: #ffffff;               
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;               /* pill-like */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
-
 #start-controls label {
-  font-family: 'Noto Sans', sans-serif; /* or Arial, Helvetica, sans-serif */
-  font-weight: bold;
+  font-family: 'Noto Sans', sans-serif;
   font-size: 1rem;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0 4px 0 2px;              /* tiny nudge for balance */
 }
 
 
