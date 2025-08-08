@@ -386,7 +386,7 @@ html, body { height: 100%; }  /* makes centering reliable */
   filter: blur(50px);
   opacity: 0.55;
   border-radius: 40%;
-  animation: blobFloat 16s ease-in-out infinite;
+  animation: blobFloat 8s ease-in-out infinite;
   mix-blend-mode: multiply;
 }
 
