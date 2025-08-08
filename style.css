@@ -133,6 +133,7 @@ footer {
   box-shadow: 0 8px 18px rgba(30,136,255,0.35);
   transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
   margin-top: 16px;
+  margin-left: 12px;
 }
 #start-btn:hover {
   transform: translateY(-1px);
