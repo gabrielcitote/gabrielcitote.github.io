@@ -356,13 +356,13 @@ html, body { height: 100%; }  /* makes centering reliable */
 }
 
 
-/* --- Minimal, soft, mesmerizing blobs --- */
+/* --- Minimal, soft, mesmerizing blobs (darker & snappier) --- */
 #start-screen {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
-  background: #f9f6ef;                 /* quiet base */
+  background: #f3efe7;                /* a hair darker base */
   z-index: 9999;
 }
 
@@ -375,9 +375,9 @@ html, body { height: 100%; }  /* makes centering reliable */
   z-index: 0;
   background:
     radial-gradient(80% 70% at 50% 40%,
-      rgba(0,0,0,0) 60%,
-      rgba(0,0,0,0.06) 85%,
-      rgba(0,0,0,0.12) 100%);
+      rgba(0,0,0,0) 58%,
+      rgba(0,0,0,0.07) 85%,
+      rgba(0,0,0,0.14) 100%);
 }
 
 .bg-blobs {
@@ -388,28 +388,28 @@ html, body { height: 100%; }  /* makes centering reliable */
   z-index: 0;
 }
 
-/* softer palette (desaturated GeoGuessr vibe) */
+/* slightly darker, more saturated */
 :root {
-  --blue:  #4AA8FF;  /* softer than #1E88FF */
-  --green: #64D88B;  /* softer than #2ECC71 */
-  --teal:  #38C6CF;  /* accent, kept faint */
+  --blue:   #1E7AE5;  /* darker blue */
+  --green:  #2DBC6E;  /* darker green */
+  --accent: #E24646;  /* richer red accent */
 }
 
-/* big, soft blobs */
+/* bigger/clearer + a bit more presence */
 .bg-blobs > span {
   position: absolute;
-  width: 72vmax;
-  height: 72vmax;
+  width: 70vmax;
+  height: 70vmax;
   border-radius: 40%;
-  filter: blur(90px);         /* bigger blur = calmer */
-  opacity: .35;               /* keep it gentle */
+  filter: blur(80px);        /* slightly less blur = more definition */
+  opacity: .42;              /* stronger but not loud */
   mix-blend-mode: multiply;
-  animation: blobDrift 8s ease-in-out infinite;
+  animation: blobDrift 6s ease-in-out infinite;  /* faster */
   will-change: transform;
   z-index: -1;
 }
 
-/* just three blobs */
+/* three blobs */
 .bg-blobs > span:nth-child(1) {
   background: var(--blue);
   top: -18%; left: -22%;
@@ -418,21 +418,21 @@ html, body { height: 100%; }  /* makes centering reliable */
 .bg-blobs > span:nth-child(2) {
   background: var(--green);
   bottom: -22%; right: -18%;
-  animation-delay: 4s;
+  animation-delay: 2s;        /* tighter stagger for livelier motion */
 }
 .bg-blobs > span:nth-child(3) {
-  background: #ff5c5c;
-  top: 10%; right: 30%;
-  opacity: .28;                 /* even softer for the accent */
+  background: var(--accent);
+  top: 8%; right: 30%;
+  opacity: .32;               /* accent a touch softer than primaries */
   width: 60vmax; height: 60vmax;
-  animation-delay: 8s;
+  animation-delay: 4s;
 }
 
-/* smooth, minimal motion */
+/* wider arc + quicker cycle */
 @keyframes blobDrift {
   0%   { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
-  35%  { transform: translate3d(4%, -3%, 0) scale(1.04) rotate(8deg); }
-  70%  { transform: translate3d(-3%, 4%, 0) scale(0.98) rotate(-6deg); }
+  35%  { transform: translate3d(6%, -4%, 0) scale(1.08) rotate(10deg); }
+  70%  { transform: translate3d(-5%, 6%, 0) scale(0.95) rotate(-8deg); }
   100% { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
 }
 
@@ -440,4 +440,5 @@ html, body { height: 100%; }  /* makes centering reliable */
 @media (prefers-reduced-motion: reduce) {
   .bg-blobs > span { animation: none; }
 }
+
 
