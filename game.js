@@ -447,39 +447,38 @@ function applyMode(mode) {
 
   if (mode === 'easy' || mode === 'medium' || mode === 'hard') {
     workingPhrases = phrases.filter(p => langDifficulty(p.lang) === mode);
-    allowSet = null; // no region limit if just difficulty
-  }
-  else if (mode === 'europe') allowSet = Regions.Europe;
+  } else if (mode === 'europe') allowSet = Regions.Europe;
   else if (mode === 'asia') allowSet = Regions.Asia;
   else if (mode === 'geoguessr') allowSet = GeoGuessrISO3;
-  else if (mode === 'africa')        allowSet = Regions.Africa;
-  else if (mode === 'na')            allowSet = Regions.NorthAmerica;
-  else if (mode === 'sa')            allowSet = Regions.SouthAmerica;
-  else if (mode === 'caribbean')     allowSet = Regions.CentralCaribbean;
-  else if (mode === 'oceania')       allowSet = Regions.Oceania;
-  else if (mode === 'middleeast')    allowSet = Regions.MiddleEast;
-  else if (mode === 'scandinavian')  allowSet = Regions.Scandinavian;
+  else if (mode === 'africa') allowSet = Regions.Africa;
+  else if (mode === 'na') allowSet = Regions.NorthAmerica;
+  else if (mode === 'sa') allowSet = Regions.SouthAmerica;
+  else if (mode === 'caribbean') allowSet = Regions.CentralCaribbean;
+  else if (mode === 'oceania') allowSet = Regions.Oceania;
+  else if (mode === 'middleeast') allowSet = Regions.MiddleEast;
+  else if (mode === 'scandinavian') allowSet = Regions.Scandinavian;
   else {
-    workingPhrases = phrases.slice(); // all
+    workingPhrases = phrases.slice();
   }
 
-  // If it's a region mode
+  // ✅ Region mode using language→country mapping
   if (allowSet) {
-    workingPhrases = phrases.filter(p => p.iso.some(iso => allowSet.has(iso)));
+    workingPhrases = phrases.filter(p =>
+      isosForLanguage(p.lang).some(iso => allowSet.has(iso))
+    );
   }
 
-  // Style and bind clicks
+  // style layers + bind
   countriesLayer.eachLayer(layer => {
     const iso = iso2to3[layer.feature.id] || layer.feature.id;
     const allowed = !allowSet || allowSet.has(iso);
     layer.setStyle({
       fillOpacity: allowed ? 0.7 : 0.15,
-      color: allowed ? '#444' : '#bbb'
+      color: allowed ? '#444' : '#bbb',
+      fillColor: '#ccc'
     });
     layer.off('click');
-    if (allowed) {
-      layer.on('click', () => handleGuess(layer.feature, layer));
-    }
+    if (allowed) layer.on('click', () => handleGuess(layer.feature, layer));
   });
 
   nextPhrase();
@@ -525,7 +524,8 @@ function handleGuess(feature, layer) {
   const iso2 = feature.id;
   const iso = iso2to3[iso2] || iso2;
   const name = feature.properties.name;
-  const isRight = current.iso.includes(iso);
+  const langsHere = countryLangMap[iso] || [];
+  const isRight = langsHere.includes(current.lang);
 
   const languages = countryLangMap[iso] || [];
   const langText = languages.length ? languages.join(', ') : 'Unknown';
@@ -544,12 +544,14 @@ function handleGuess(feature, layer) {
 
     const correctNames = [];
     countriesLayer.eachLayer(l => {
-      const correctIso = iso2to3[l.feature.id] || l.feature.id;
-      if (current.iso.includes(correctIso)) {
-        l.setStyle({ fillColor: "green" });
-        correctNames.push(l.feature.properties.name);
-      }
-    });
+  const lIso = iso2to3[l.feature.id] || l.feature.id;
+  const speaks = (countryLangMap[lIso] || []).includes(current.lang);
+  if (speaks) {
+    l.setStyle({ fillColor: "green", fillOpacity: 0.7 });
+    l.bringToFront();
+    correctNames.push(l.feature.properties.name);
+  }
+});
 
     feedbackEl.innerHTML = `
       <div style="border: 2px solid red; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
@@ -575,36 +577,32 @@ function showAnswer() {
   const correctNames = [];
   countriesLayer.eachLayer(layer => {
     const iso = iso2to3[layer.feature.id] || layer.feature.id;
-    if (current.iso.includes(iso)) {
-      layer.setStyle({ fillColor: "green" });
+    const speaks = (countryLangMap[iso] || []).includes(current.lang);
+    if (speaks) {
+      layer.setStyle({ fillColor: "green", fillOpacity: 0.7 });
+      layer.bringToFront();
       correctNames.push(layer.feature.properties.name);
     } else {
-      // keep dimming state consistent
       const cur = layer.options.fillOpacity ?? 0.7;
       const isDimmed = cur < 0.7;
       layer.setStyle({ fillColor: "#ccc", fillOpacity: isDimmed ? 0.15 : 0.7 });
     }
   });
 
-  const allLangs = [...new Set(
-    current.iso.flatMap(iso => countryLangMap[iso] || [])
-  )];
-  const langText = allLangs.length ? allLangs.join(', ') : 'Unknown';
-
   feedbackEl.innerHTML = `
     <div style="border: 2px solid green; padding: 10px; border-radius: 5px;">
       <strong>✅ Correct Answer:</strong><br>
       Correct language: <b>${current.lang}</b><br>
-      Spoken in: ${correctNames.join(', ')}<br>
-      <i>Language(s):</i> ${langText}
+      Spoken in: ${correctNames.join(', ')}
     </div>
   `;
-  
+
   document.getElementById('show-family').hidden = false;
   nextBtn.hidden = false;
   document.getElementById('show-answer').hidden = true;
   document.getElementById('skip').hidden = true;
 }
+
 
 document.getElementById('show-family').addEventListener('click', () => {
   if (familyShown || !current) return;  // prevent duplicates / early clicks
@@ -648,6 +646,19 @@ document.getElementById('show-family').addEventListener('click', () => {
     </div>
   `;
 });
+
+function isosForLanguage(lang){
+  return Object.entries(countryLangMap)
+    .filter(([iso, langs]) => (langs || []).includes(lang))
+    .map(([iso]) => iso);
+}
+
+// in applyMode(), when allowSet is a region set:
+if (allowSet) {
+  workingPhrases = phrases.filter(p =>
+    isosForLanguage(p.lang).some(iso => allowSet.has(iso))
+  );
+}
 
 // --- Boot + Start button binding (put this at the VERY bottom of game.js) ---
 document.addEventListener('DOMContentLoaded', () => {
