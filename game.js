@@ -653,13 +653,6 @@ function isosForLanguage(lang){
     .map(([iso]) => iso);
 }
 
-// in applyMode(), when allowSet is a region set:
-if (allowSet) {
-  workingPhrases = phrases.filter(p =>
-    isosForLanguage(p.lang).some(iso => allowSet.has(iso))
-  );
-}
-
 // --- Boot + Start button binding (put this at the VERY bottom of game.js) ---
 document.addEventListener('DOMContentLoaded', () => {
   const gameHeader = document.querySelector('header.game-header');
