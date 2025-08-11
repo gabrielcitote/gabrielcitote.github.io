@@ -180,5 +180,8 @@
   "WSM": ["Samoan", "English"],
   "YEM": ["Arabic"],
   "ZMB": ["English"],
-  "ZWE": ["English", "Shona", "Ndebele"]
+  "ZWE": ["English", "Shona", "Ndebele"],
+  "DZA": ["Arabic", "Berber"],
+  "ESH": ["Arabic"],
+  "SSD": ["English"]
 }
