@@ -452,6 +452,13 @@ function applyMode(mode) {
   else if (mode === 'europe') allowSet = Regions.Europe;
   else if (mode === 'asia') allowSet = Regions.Asia;
   else if (mode === 'geoguessr') allowSet = GeoGuessrISO3;
+  else if (mode === 'africa')        allowSet = Regions.Africa;
+  else if (mode === 'na')            allowSet = Regions.NorthAmerica;
+  else if (mode === 'sa')            allowSet = Regions.SouthAmerica;
+  else if (mode === 'caribbean')     allowSet = Regions.CentralCaribbean;
+  else if (mode === 'oceania')       allowSet = Regions.Oceania;
+  else if (mode === 'middleeast')    allowSet = Regions.MiddleEast;
+  else if (mode === 'scandinavian')  allowSet = Regions.Scandinavian;
   else {
     workingPhrases = phrases.slice(); // all
   }
