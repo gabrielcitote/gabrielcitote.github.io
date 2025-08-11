@@ -206,20 +206,56 @@ const showAnswerBtn = document.getElementById('show-answer');
 const skipBtn = document.getElementById('skip');              
 
 // --- Regions (ISO-3) ---
+// --- Regions (ISO-3) ---
 const Regions = {
   Europe: new Set([
     "ALB","AND","AUT","BEL","BIH","BGR","HRV","CYP","CZE","DNK","EST","FIN","FRA",
     "DEU","GRC","HUN","ISL","IRL","ITA","LVA","LIE","LTU","LUX","MLT","MDA","MCO",
     "MNE","NLD","MKD","NOR","POL","PRT","ROU","SMR","SRB","SVK","SVN","ESP","SWE",
-    "CHE","UKR","GBR","VAT","KOS" // include Kosovo if your GeoJSON has it
+    "CHE","UKR","GBR","VAT","KOS"
   ]),
   Asia: new Set([
     "AFG","ARM","AZE","BHR","BGD","BTN","BRN","KHM","CHN","CYP","GEO","HKG","IND",
     "IDN","IRN","IRQ","ISR","JPN","JOR","KAZ","KWT","KGZ","LAO","LBN","MAC","MYS",
     "MDV","MNG","MMR","NPL","PRK","OMN","PAK","PSE","PHL","QAT","SAU","SGP","KOR",
     "LKA","SYR","TWN","TJK","THA","TUR","TKM","ARE","UZB","VNM","YEM"
+  ]),
+  Africa: new Set([
+    "DZA","AGO","BEN","BWA","BFA","BDI","CMR","CPV","CAF","TCD","COM","COG","COD",
+    "CIV","DJI","EGY","GNQ","ERI","ETH","GAB","GMB","GHA","GIN","GNB","KEN","LSO",
+    "LBR","LBY","MDG","MWI","MLI","MRT","MUS","MAR","MOZ","NAM","NER","NGA","RWA",
+    "STP","SEN","SYC","SLE","SOM","ZAF","SSD","SDN","SWZ","TZA","TGO","TUN","UGA",
+    "ZMB","ZWE","ESH"
+  ]),
+  NorthAmerica: new Set([
+    "CAN","USA","MEX","GRL","BMU"
+  ]),
+  CentralCaribbean: new Set([
+    "BLZ","CRI","GTM","HND","SLV","NIC","PAN",
+    "ATG","BHS","BRB","CUB","DMA","DOM","GRD","HTI",
+    "JAM","KNA","LCA","VCT","TTO","ABW","BHS","BRB",
+    "CYM","CUW","MTQ","GLP","PRI","VIR","TCA"
+  ]),
+  SouthAmerica: new Set([
+    "ARG","BOL","BRA","CHL","COL","ECU","GUY","PRY","PER","SUR","URY","VEN","FLK"
+  ]),
+  Oceania: new Set([
+    "AUS","NZL","FJI","KIR","MHL","FSM","NRU","PLW","PNG","WSM",
+    "SLB","TON","TUV","VUT","NCL","PYF","WLF","NFK","COK","TKL","NIU","GUM"
+  ]),
+  MiddleEast: new Set([
+    "TUR","CYP","ISR","PSE","LBN","JOR","SYR","IRQ","IRN",
+    "KWT","SAU","BHR","QAT","ARE","OMN","YEM"
+  ]),
+  Scandinavian: new Set([
+  "DNK", // Denmark
+  "FIN", // Finland
+  "ISL", // Iceland
+  "NOR", // Norway
+  "SWE", // Sweden
   ])
 };
+
 
 Object.assign(languageFamilyMap, {
   // Indo-Iranian (Indo-European)
